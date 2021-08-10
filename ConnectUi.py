@@ -6,7 +6,7 @@ import VideoplayerUi
 import PlaylistUi
 import SearchUi
 import MiniplayerUi
-import videodata
+
 import CheckAddUi
 
 class Connect(object):
@@ -18,8 +18,7 @@ class Connect(object):
         self.videoplayerui=VideoplayerUi.Player()
         self.search=SearchUi.SearchUi()
         self.miniplayerui=MiniplayerUi.MiniplayerUi()
-        self.videodata=videodata.VideoData()
-     
+       
 
         self.setupUi()
         self.page()

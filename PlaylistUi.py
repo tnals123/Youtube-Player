@@ -1,16 +1,16 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-import videodata
+import videodatabase
 from PyQt5.QtGui import QIcon, QPixmap
 
 class Playlist:
     def __init__(self):
 
-        self.playlistlocate=videodata.VideoData()
+        self.playlistlocate=videodatabase.VideoData()
         self.playlistlocate.FindCount()
         self.playlistui_x=1300
         self.playlistui_y=900
         self.setupUi()
-
+        
     def setupUi(self):
 
         
@@ -81,8 +81,15 @@ class Playlist:
                 self.myplaylistname.setText(self.playlistlocate.buttonlabellist[i])
                 self.myplaylistname.setStyleSheet('color:white;')
         
-        for i in range(0,len(self.playlistlocate.deletebutton)):
-            pass
-
+        for i in range(0,len(self.playlistlocate.buttonlist2)):
+             self.playlistlocate.deletebutton[i]=QtWidgets.QPushButton(self.playlistui)
+             if i<=4 :
+                 self.playlistlocate.deletebutton[i].setGeometry(100+(300*i+170),400,30,30)
+                 self.playlistlocate.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
+                 self.playlistlocate.deletebutton[i].hide()
+             if i>=4 :
+                 self.playlistlocate.deletebutton[i].setGeometry(100+(300*(i-4)+170),700,30,30)
+                 self.playlistlocate.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
+                 self.playlistlocate.deletebutton[i].hide()
       
        

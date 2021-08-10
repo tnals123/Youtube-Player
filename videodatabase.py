@@ -18,6 +18,8 @@ class VideoData:
         # self.cur.execute("DELETE FROM buttonname")
         # self.conn.commit()
 
+    
+
     def DataCheck(self):
         self.conn=sqlite3.connect("PlaylistData.db")
         self.cur=self.conn.cursor()
@@ -37,15 +39,10 @@ class VideoData:
         self.cur.execute("INSERT INTO buttonname VALUES('"+self.name+"')")
         self.conn.commit()
 
-    def CreateDeleteButton(self,id):
-        self.id=id
-        self.cur.execute("INSERT INTO cancelbutton VALUES('"+self.id+"')")
-        self.conn.commit()
-
+    
     def StoreButtons(self):
         self.buttonlist=[]
         self.buttonlabellist=[]
-        self.realbuttonlist=[]
         self.deletebutton=[]
         self.cur.execute("SELECT * from buttonname")
         self.buttonlist2=self.cur.fetchall()
@@ -59,8 +56,8 @@ class VideoData:
         except IndexError:
             pass
         
-
-        return self.buttonlist,self.buttonlabellist
+        
+        return self.buttonlist,self.buttonlabellist,self.deletebutton
         
 
     

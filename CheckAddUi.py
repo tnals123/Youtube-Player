@@ -1,11 +1,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-import videodata
+import videodatabase
 from PyQt5.QtWidgets import QMessageBox
 class CheckAddPlaylist(object):
     def __init__(self):
-
+        
+        
         self.msg=QMessageBox()
-        self.data=videodata.VideoData()
+        self.data=videodatabase.VideoData()
         self.data.FindCount()
         self.mainwindow=QtWidgets.QMainWindow()
         self.mainwindow.hide()
@@ -46,3 +47,5 @@ class CheckAddPlaylist(object):
         self.msg.setText('재생목록 중 같은 이름이 있습니다.')
         self.msg.setStandardButtons(QMessageBox.Ok)
         retval = self.msg.exec_()
+
+    
