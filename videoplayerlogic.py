@@ -2,11 +2,11 @@ import VideoplayerUi
 import vlc
 import pafy
 import sys
+import videodatabase
 from PyQt5 import QtCore, QtGui, QtWidgets
 class VideoPlayerLogic:
     def __init__(self):
         self.videoplayerui=VideoplayerUi.VideoPlayer()
-
         self.instance = vlc.Instance()
         
         self.mediaplayer = self.instance.media_player_new()
@@ -17,8 +17,10 @@ class VideoPlayerLogic:
         elif sys.platform == "darwin":  # for MacOS
             self.mediaplayer.set_nsobject(self.videoplayerui.videoframe.winId())
         
+
         
     def asdf(self):
+        self.videodata=videodatabase.VideoData()
         self.videoplayerui.mainwindow.show()
         url = "https://www.youtube.com/watch?v=h4iGKoTZ4iM"                                                                                         
         video = pafy.new(url)                                                                                                                       

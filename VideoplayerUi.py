@@ -17,6 +17,36 @@ class VideoPlayer(object):
         self.background.setGeometry(0,0,1400,900)
         self.background.setStyleSheet('background:black;')
 
+        self.backbutton=QtWidgets.QPushButton(self.playerui)
+        self.backbutton.setGeometry(50,760,30,30)
+        self.backbutton.setStyleSheet('background-image:url(previous.jpg);''border:1px solid black;')
+
+
+        self.volumeslider=QtWidgets.QSlider(QtCore.Qt.Horizontal,self.playerui)
+        self.volumeslider.setGeometry(350,760,80,30)
+        self.volumeslider.setStyleSheet("QSlider::handle:horizontal {background-color: red;}")
+
+        self.speaker=QtWidgets.QPushButton(self.playerui)
+        self.speaker.setGeometry(300,760,30,30)
+        self.speaker.setStyleSheet('background-image:url(speaker.png);''border:1px solid black;')
+
+        self.pausebutton=QtWidgets.QPushButton(self.playerui)
+        self.pausebutton.setGeometry(100,760,30,30)
+        self.pausebutton.setStyleSheet('background-image:url(pause.jpg);''border:1px solid black;')
+
+        self.playbutton=QtWidgets.QPushButton(self.playerui)
+        self.playbutton.setGeometry(100,760,30,30)
+        self.playbutton.setStyleSheet('background-image:url(play.jpg);''border:1px solid black;')
+        self.playbutton.hide()
+
+        self.nextbutton=QtWidgets.QPushButton(self.playerui)
+        self.nextbutton.setGeometry(200,760,30,30)
+        self.nextbutton.setStyleSheet('background-image:url(next.jpg);''border:1px solid black;')
+
+        self.stopbutton=QtWidgets.QPushButton(self.playerui)
+        self.stopbutton.setGeometry(150,760,30,30)
+        self.stopbutton.setStyleSheet('background-image:url(stop.jpg);''border:1px solid black;')
+
         self.videolistlabel=QtWidgets.QLabel(self.playerui)
         self.videolistlabel.setGeometry(1100,50,250,600)
         self.videolistlabel.setStyleSheet('background:#1C1C1C;')
@@ -49,5 +79,5 @@ class VideoPlayer(object):
         self.miniplayerbutton.setStyleSheet('border-style:dashed;''border-width:2px;''border-color:red;''background:black;''color:white;')
         self.miniplayerbutton.setText('미니 플레이어 사용하기')
 
-
+        
 
