@@ -20,7 +20,7 @@ class Mainlogic:
         self.mainlogic.playlist.addpushbutton.leaveEvent=lambda event:self.LeaveAnimation(event)
         self.mainlogic.playlist.editbutton.clicked.connect(self.VideoListEditButton)
         self.mainlogic.videoplayerui.previouspagebutton.clicked.connect(self.BackToVideoList)
-
+        self.mainlogic.playlist.cancelbutton.clicked.connect(self.CanCelEdit)
         self.videodata.StoreButtons()
         for i in range(0,len(self.videodata.buttonlist2)):
             self.mainlogic.playlist.playlistlocate.buttonlist[i].clicked.connect(self.GoToVideoPlayerPage)
@@ -64,22 +64,29 @@ class Mainlogic:
 
 
     def VideoListEditButton(self):
-        
+        self.mainlogic.playlist.applybutton.show()
+        self.mainlogic.playlist.cancelbutton.show()
         try:
-            self.videodata.buttonlist[self.videodata.result[0][0]-1]=QtWidgets.QPushButton(self.mainlogic.playlist.playlistui)
-            if 100+(300*self.videodata.result[0][0]<=700) :
-                self.videodata.buttonlist[self.videodata.result[0][0]-1].setGeometry(100+(300*(self.videodata.result[0][0]-1)+170),400,30,30)
-                self.videodata.buttonlist[self.videodata.result[0][0]-1].setStyleSheet('background:red;''border-radius:15px;')
-                self.videodata.buttonlist[self.videodata.result[0][0]-1].setText('X')
-                self.videodata.buttonlist[self.videodata.result[0][0]-1].setFont(QtGui.QFont(None,15))
-                self.videodata.buttonlist[self.videodata.result[0][0]-1].show()
-               
-                if 100+(300*self.videodata.result[0][0])>1000:
-                    self.videodata.buttonlist[self.videodata.result[0][0]-1].setGeometry(100+(300*(self.videodata.result[0][0]-5)+170),660,30,30)
-                    self.videodata.buttonlist[self.videodata.result[0][0]-1].setStyleSheet('background:red;''border-radius:15px;')
-                    self.videodata.buttonlist[self.videodata.result[0][0]-1].show()
+            for i in range(0,len(self.videodata.deletebutton)):
+                self.videodata.deletebutton[i]=QtWidgets.QPushButton(self.mainlogic.playlist.playlistui)
+                
+                if 100+(300*i)<=1000 :
+                    self.videodata.deletebutton[i].setGeometry(100+(300*i+170),400,30,30)
+                    self.videodata.deletebutton[i].setStyleSheet('background:red;''border-radius:15px;')
+                    self.videodata.deletebutton[i].setText('X')
+                    self.videodata.deletebutton[i].setFont(QtGui.QFont(None,15))
+                    self.videodata.deletebutton[i].show()
+                
+                elif 100+(300*i)>=1300:
+                    self.videodata.deletebutton[i].setGeometry(100+(300*(i-4)+170),660,30,30)
+                    self.videodata.deletebutton[i].setStyleSheet('background:red;''border-radius:15px;')
+                    self.videodata.deletebutton[i].setText('X')
+                    self.videodata.deletebutton[i].setFont(QtGui.QFont(None,15))
+                    self.videodata.deletebutton[i].show()
+                    self.videodata.deletebutton[i].show()
         except AttributeError:
             pass
+            
         for i in range(0,len(self.mainlogic.playlist.playlistlocate.deletebutton)):
             
             if i<=4 :
@@ -94,7 +101,18 @@ class Mainlogic:
                 self.mainlogic.playlist.playlistlocate.deletebutton[i].setFont(QtGui.QFont(None,15))
             self.mainlogic.playlist.playlistlocate.deletebutton[i].show()
 
+            self.mainlogic.playlist.editbutton.hide()
+            
 
+    def CanCelEdit(self):
+        self.mainlogic.playlist.applybutton.hide()
+        self.mainlogic.playlist.cancelbutton.hide()
+        self.mainlogic.playlist.editbutton.show()
+    
+        for i in range(0,len(self.mainlogic.playlist.playlistlocate.deletebutton)):
+            self.mainlogic.playlist.playlistlocate.deletebutton[i].hide()
+        for i in range(0,len(self.videodata.deletebutton)):
+            self.videodata.deletebutton[i].hide()
 
     #재생목록 추가 관련 함수
 
