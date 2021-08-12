@@ -4,27 +4,30 @@ import sys
 import ConnectUi
 import videodatabase
 import videoplayerlogic
-
+import VideoplayerUi
 class Mainlogic:
     def __init__(self):
         
         self.mainlogic=ConnectUi.Connect()
-        
-        
+        self.videoplayerui=VideoplayerUi.VideoPlayer()
+        self.videoplayerlogic=videoplayerlogic.VideoPlayerLogic()
         self.mainlogic.show()
         self.videodata=videodatabase.VideoData()
+
+
         self.mainlogic.playlist.addpushbutton.clicked.connect(self.CheckAddPlaylist)
         self.mainlogic.check.cancelbutton.clicked.connect(self.Uihide)
         self.mainlogic.check.addpushbutton.mousePressEvent=lambda event,name2=self.mainlogic.playlist.addpushbutton:self.AddPlaylist(event,name2)
         self.mainlogic.playlist.addpushbutton.enterEvent=lambda event:self.EnterAnimation(event)
         self.mainlogic.playlist.addpushbutton.leaveEvent=lambda event:self.LeaveAnimation(event)
         self.mainlogic.playlist.editbutton.clicked.connect(self.VideoListEditButton)
-        self.mainlogic.videoplayerui.previouspagebutton.clicked.connect(self.BackToVideoList)
+        self.videoplayerui.previouspagebutton.clicked.connect(self.BackToVideoList)
         self.mainlogic.playlist.cancelbutton.clicked.connect(self.CanCelEdit)
         self.videodata.StoreButtons()
+
         for i in range(0,len(self.videodata.buttonlist2)):
             self.mainlogic.playlist.playlistlocate.buttonlist[i].clicked.connect(self.GoToVideoPlayerPage)
-
+            self.mainlogic.playlist.playlistlocate.buttonlist[i].clicked.connect(self.videoplayerlogic.asdf)
         for i in range(0,len(self.mainlogic.playlist.playlistlocate.buttonlist)):
             self.MyEvent(i)
         self.mainlogic.playlist.searchbutton.clicked.connect(self.SearchPage)
@@ -32,11 +35,16 @@ class Mainlogic:
     #페이지 이동
     def SearchPage(self):
         self.mainlogic.mainwindow.resize(self.mainlogic.search.searchui_x,self.mainlogic.search.searchui_y)
-        self.mainlogic.paper.setCurrentIndex(2)
+        self.mainlogic.paper.setCurrentIndex(1)
 
     def BackToVideoList(self):
         self.mainlogic.mainwindow.resize(self.mainlogic.playlist.playlistui_x,self.mainlogic.playlist.playlistui_y)
         self.mainlogic.paper.setCurrentIndex(0)
+
+    def GoToVideoPlayerPage(self):
+        self.mainlogic.mainwindow.hide()
+        
+        self.videoplayerlogic.asdf()
 
     #애니메이션 처리
     def EnterAnimation(self,event):
@@ -176,9 +184,9 @@ class Mainlogic:
                 self.videodata.buttonlist[self.videodata.result[0][0]].show()
         
         
-    def GoToVideoPlayerPage(self):
-        self.mainlogic.mainwindow.resize(self.mainlogic.videoplayerui.playerui_x,self.mainlogic.videoplayerui.playerui_y)
-        self.mainlogic.paper.setCurrentIndex(1)  
+    
+        
+
 if __name__=="__main__":
     app=QtWidgets.QApplication(sys.argv)
     asdf=Mainlogic()
