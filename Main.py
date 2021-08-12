@@ -1,4 +1,5 @@
 
+from urllib import request
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 import vlc
@@ -7,11 +8,11 @@ import ConnectUi
 import videodatabase
 import videoplayerlogic
 import VideoplayerUi
-
+import requests
 ################################   데이터베이스에 리스트 하나 더 만들어서 매개변수에 넣을 리스트 하나 만들기
 class Mainlogic:
     def __init__(self):
-        
+        self.count=0
         self.mainlogic=ConnectUi.Connect()
         self.videoplayerui=VideoplayerUi.VideoPlayer()
         
@@ -39,6 +40,8 @@ class Mainlogic:
         self.videoplayerui.playbutton.clicked.connect(self.PlayPause)
         self.videoplayerui.stopbutton.clicked.connect(self.VideoStop)
         self.videoplayerui.volumeslider.valueChanged.connect(self.setVolume)
+        self.videoplayerui.nextbutton.clicked.connect(self.NextVideo)
+        self.videoplayerui.backbutton.clicked.connect(self.PreviousVideo)
         self.StartProgrem()
 
     ###### 영상 재생 함수
@@ -69,6 +72,7 @@ class Mainlogic:
 
     #### 재생목록별 영상 재생
     def PlayVideo(self,event,myplaylist):
+        
         self.myplaylist=myplaylist
         self.mainlogic.mainwindow.hide()
         self.videoplayerui.mainwindow.show()
@@ -77,8 +81,31 @@ class Mainlogic:
         
         try:
             self.videodata.FindVideoUrl(self.myplaylist)
+            print(self.videodata.urlbuttonlist[0][0])
+            for i in range(0,len(self.videodata.myurl)):
+                thumb=self.videodata.urlbuttonlist[i]
+                thumbnail=pafy.new(thumb)
+                thumbnailimg=thumbnail.bigthumb
+                videotitle=thumbnail.title
+                
+                image=QtGui.QImage()
+              
+                image.loadFromData(requests.get(thumbnailimg).content)
+                image.scaled(225,140)
+                
+                self.videodata.urlbuttonlist[i]=QtWidgets.QLabel(self.videoplayerui.playerui)
+                self.videodata.urlbuttonlist[i].setGeometry(1115,60+(180*i),280,140)
+                self.videodata.urlbuttonlist[i].setStyleSheet('background:white;')
+                self.videodata.urlbuttonlist[i].setPixmap(QtGui.QPixmap(image))
+                self.videodata.urlbuttonlist[i].show()
+
+                self.videodata.urltitle[i]=QtWidgets.QLabel(self.videoplayerui.playerui)
+                self.videodata.urltitle[i].setGeometry(1115,60+(180*i)+150,270,22)
+                self.videodata.urltitle[i].setStyleSheet('color:white;')
+                self.videodata.urltitle[i].setText(videotitle)
+                self.videodata.urltitle[i].show()
         
-            url = self.videodata.myurl[0][0]                                                                                   
+            url = self.videodata.myurl[self.count][0]                                                                                   
             video = pafy.new(url)                                                                                                                       
             best = video.getbest()                                                                                                                 
             playurl = best.url                                                                                                                          
@@ -86,8 +113,57 @@ class Mainlogic:
             media = self.instance.media_new(playurl)
             self.mediaplayer.set_media(media)
             self.mediaplayer.play()
+            
         except IndexError or TypeError:
+            
             pass
+
+    def NextVideo(self):
+        try:
+            self.count+=1 
+            self.mediaplayer.stop()
+            url = self.videodata.myurl[self.count][0]                                                                                   
+            video = pafy.new(url)                                                                                                                       
+            best = video.getbest()                                                                                                                 
+            playurl = best.url                                                                                                                          
+                                                                                        
+            media = self.instance.media_new(playurl)
+            self.mediaplayer.set_media(media)
+            self.mediaplayer.play() 
+        except IndexError:
+            self.count=0 
+            url = self.videodata.myurl[self.count][0] 
+            video = pafy.new(url)                                                                                                                       
+            best = video.getbest()                                                                                                                 
+            playurl = best.url                                                                                                                          
+                                                                                        
+            media = self.instance.media_new(playurl)
+            self.mediaplayer.set_media(media)
+            self.mediaplayer.play() 
+        print(self.count)
+    def PreviousVideo(self):
+        print(self.count)
+        try:
+            self.count-=1 
+            self.mediaplayer.stop()
+            url = self.videodata.myurl[self.count][0]                                                                                   
+            video = pafy.new(url)                                                                                                                       
+            best = video.getbest()                                                                                                                 
+            playurl = best.url                                                                                                                          
+                                                                                        
+            media = self.instance.media_new(playurl)
+            self.mediaplayer.set_media(media)
+            self.mediaplayer.play() 
+        except IndexError:
+            self.count=self.videodata.myurl.index(self.videodata.myurl[-1])
+            url = self.videodata.myurl[self.count][0] 
+            video = pafy.new(url)                                                                                                                       
+            best = video.getbest()                                                                                                                 
+            playurl = best.url                                                                                                                          
+                                                                                        
+            media = self.instance.media_new(playurl)
+            self.mediaplayer.set_media(media)
+            self.mediaplayer.play() 
 
     def StartProgrem(self):
         self.videodata=videodatabase.VideoData()

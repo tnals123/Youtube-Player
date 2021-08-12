@@ -42,9 +42,14 @@ class VideoData:
 
     def FindVideoUrl(self,name):
         self.name=name
+        self.urlbuttonlist=[]
+        self.urltitle=[]
         self.cur.execute("SELECT * from '"+self.name+"'")
         self.myurl=self.cur.fetchall()
-        return( self.myurl)
+        for i in range(0,len(self.myurl)):
+            self.urlbuttonlist.append(self.myurl[i][0])
+            self.urltitle.append(self.myurl[i][0])
+        return self.myurl,self.urlbuttonlist,self.urltitle
 
        
     def CreatePlaylist(self,name):
@@ -81,4 +86,5 @@ class VideoData:
 
 asdf=VideoData()
 asdf.StoreButtons()
-# asdf.AddVideo('재생목록0','https://www.youtube.com/watch?v=DCkqHOsjuFs')
+asdf.FindVideoUrl('재생목록0')
+print(asdf.urlbuttonlist)
