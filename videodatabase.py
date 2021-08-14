@@ -51,7 +51,12 @@ class VideoData:
             self.urlbuttonlist.append(self.myurl[i][0])
             self.urltitle.append(self.myurl[i][0])
             self.urltitle_forminiplayer.append(self.myurl[i][0])
-       
+
+    def AddVideoToPlayList(self,playlist,url):
+        self.playlist=playlist
+        self.url=url
+        self.cur.execute("INSERT INTO '"+self.playlist+"' VALUES('"+self.url+"')")
+        self.conn.commit()
 
        
     def CreatePlaylist(self,name):

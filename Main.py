@@ -9,6 +9,8 @@ import videodatabase
 import videoplayerlogic
 import VideoplayerUi
 import requests
+from youtube_search import YoutubeSearch
+import json
 ################################   데이터베이스에 리스트 하나 더 만들어서 매개변수에 넣을 리스트 하나 만들기
 class Mainlogic:
     def __init__(self):
@@ -48,11 +50,41 @@ class Mainlogic:
         self.mainlogic.miniplayerui.playbutton.clicked.connect(self.PlayPause)
         self.mainlogic.miniplayerui.stopbutton.clicked.connect(self.VideoStop)
         self.mainlogic.miniplayerui.volumeslider.valueChanged.connect(self.setVolume)
-        self.mainlogic.miniplayerui.nextbutton.clicked.connect(self.NextVideo)
-        self.mainlogic.miniplayerui.backbutton.clicked.connect(self.PreviousVideo)
+        self.mainlogic.miniplayerui.nextbutton.clicked.connect(self.NextVideo2)
+        self.mainlogic.miniplayerui.backbutton.clicked.connect(self.PreviousVideo2)
         self.mainlogic.miniplayerui.backtovideobutton.clicked.connect(self.BackToVideoPlayer)
 
         self.StartProgrem()
+
+        #검색창 함수
+        self.mainlogic.search.okbutton.clicked.connect(self.AddVideoToPlayList)
+
+    ###### 재생목록에 영상 추가 함수
+
+    def PlayListButtonChect(self,event,button):
+        self.button=button
+        self.button.setDisabled(True)
+        print(self.button.text())
+
+
+    def AddVideoToPlayList(self):
+        self.buttonlist=[]
+        for i in range(0,len(self.mainlogic.search.videodata.buttonlist)):
+            if not self.mainlogic.search.videodata.buttonlist[i].isEnabled():
+                self.buttonlist.append(self.mainlogic.search.videodata.buttonlist[i].text())
+         
+        self.search=self.mainlogic.search.searchlineedit.text()
+        print(self.buttonlist)
+        results = YoutubeSearch(self.search, max_results=1).to_json()
+        results_dict = json.loads(results)
+        for v in results_dict['videos']:
+            url='https://www.youtube.com' + v['url_suffix']
+            print(url)
+        for i in range(0,len(self.buttonlist)):
+           
+            self.videodata.AddVideoToPlayList(self.buttonlist[i],url)
+           
+           
 
     ###### 영상 재생 함수
 
@@ -116,7 +148,7 @@ class Mainlogic:
             self.videodata.FindVideoUrl(self.myplaylist)
 
             for i in range(0,len(self.videodata.myurl)):
-                
+               
                 self.thumb=self.videodata.urlbuttonlist[i]
                 self.thumbnail=pafy.new(self.thumb)
                 self.thumbnailimg=self.thumbnail.bigthumb
@@ -127,14 +159,14 @@ class Mainlogic:
                 image.loadFromData(requests.get(self.thumbnailimg).content)
                 image.scaled(225,140)
                 
-                self.videodata.urlbuttonlist[i]=QtWidgets.QLabel(self.videoplayerui.playerui)
-                self.videodata.urlbuttonlist[i].setGeometry(1115,60+(180*i),280,140)
+                self.videodata.urlbuttonlist[i]=QtWidgets.QLabel(self.videoplayerui.videolistlabel)
+                self.videodata.urlbuttonlist[i].setGeometry(0,60+(180*i),280,140)
                 self.videodata.urlbuttonlist[i].setStyleSheet('background:white;')
                 self.videodata.urlbuttonlist[i].setPixmap(QtGui.QPixmap(image))
                 self.videodata.urlbuttonlist[i].show()
 
-                self.videodata.urltitle[i]=QtWidgets.QLabel(self.videoplayerui.playerui)
-                self.videodata.urltitle[i].setGeometry(1115,60+(180*i)+150,270,22)
+                self.videodata.urltitle[i]=QtWidgets.QLabel(self.videoplayerui.videolistlabel)
+                self.videodata.urltitle[i].setGeometry(0,60+(180*i)+150,270,22)
                 self.videodata.urltitle[i].setStyleSheet('color:white;')
                 self.videodata.urltitle[i].setText(self.videotitle)
                 self.videodata.urltitle[i].show()
@@ -149,10 +181,10 @@ class Mainlogic:
             self.mediaplayer.play()
             
         except IndexError or TypeError:
-            pass
-            
 
-    def NextVideo(self):
+            pass
+
+    def NextVideo2(self):
         try:
             self.count+=1 
             self.mediaplayer.stop()
@@ -179,7 +211,7 @@ class Mainlogic:
             self.mainlogic.miniplayerui.videotitle.setText(self.titlelist[self.count])
     
 
-    def PreviousVideo(self):
+    def PreviousVideo2(self):
     
         try:
             self.count-=1 
@@ -204,6 +236,60 @@ class Mainlogic:
             self.mediaplayer.set_media(media)
             self.mediaplayer.play() 
             self.mainlogic.miniplayerui.videotitle.setText(self.titlelist[self.count])
+            
+
+    def NextVideo(self):
+        try:
+            self.count+=1 
+            self.mediaplayer.stop()
+            url = self.videodata.myurl[self.count][0]                                                                                   
+            video = pafy.new(url)                                                                                                                       
+            best = video.getbest()                                                                                                                 
+            playurl = best.url                                                                                                                          
+                                                                                        
+            media = self.instance.media_new(playurl)
+            self.mediaplayer.set_media(media)
+            self.mediaplayer.play() 
+            
+            
+        except IndexError:
+            self.count=0 
+            url = self.videodata.myurl[self.count][0] 
+            video = pafy.new(url)                                                                                                                       
+            best = video.getbest()                                                                                                                 
+            playurl = best.url                                                                                                                          
+                                                                                        
+            media = self.instance.media_new(playurl)
+            self.mediaplayer.set_media(media)
+            self.mediaplayer.play() 
+            
+    
+
+    def PreviousVideo(self):
+    
+        try:
+            self.count-=1 
+            self.mediaplayer.stop()
+            url = self.videodata.myurl[self.count][0]                                                                                   
+            video = pafy.new(url)                                                                                                                       
+            best = video.getbest()                                                                                                                 
+            playurl = best.url                                                                                                                          
+                                                                                        
+            media = self.instance.media_new(playurl)
+            self.mediaplayer.set_media(media)
+            self.mediaplayer.play() 
+            
+        except IndexError:
+            self.count=self.videodata.myurl.index(self.videodata.myurl[-1])
+            url = self.videodata.myurl[self.count][0] 
+            video = pafy.new(url)                                                                                                                       
+            best = video.getbest()                                                                                                                 
+            playurl = best.url                                                                                                                          
+                                                                                        
+            media = self.instance.media_new(playurl)
+            self.mediaplayer.set_media(media)
+            self.mediaplayer.play() 
+            
 
     def StartProgrem(self):
         self.videodata=videodatabase.VideoData()
@@ -219,13 +305,19 @@ class Mainlogic:
     #페이지 이동
     def SearchPage(self):
         self.mainlogic.mainwindow.resize(self.mainlogic.search.searchui_x,self.mainlogic.search.searchui_y)
+        self.mainlogic.mainwindow.move(600,200)
+        self.mainlogic.search.ChoicePlaylist()
+        for i in range(0,len(self.mainlogic.search.videodata.buttonlist)):
+            self.mainlogic.search.videodata.buttonlist[i].mousePressEvent=lambda event,button=self.mainlogic.search.videodata.buttonlist[i]:self.PlayListButtonChect(event,button)
         self.mainlogic.paper.setCurrentIndex(1)
 
     def BackToVideoList(self):
+        self.mainlogic.mainwindow.move(250,50)
         self.mainlogic.mainwindow.resize(self.mainlogic.playlist.playlistui_x,self.mainlogic.playlist.playlistui_y)
         self.mainlogic.mainwindow.show()
         self.videoplayerui.mainwindow.hide()
         self.mediaplayer.stop()
+        
         self.mainlogic.paper.setCurrentIndex(0)
 
     def BackToVideoPlayer(self):
@@ -233,7 +325,8 @@ class Mainlogic:
         self.mainlogic.mainwindow.hide()
     
 
-   
+    def asdf(self):
+       print('asdf')
 
     #애니메이션 처리
     def EnterAnimation(self,event):

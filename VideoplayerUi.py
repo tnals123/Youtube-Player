@@ -13,6 +13,7 @@ class VideoPlayer(object):
         self.mainwindow.resize(self.playerui_x,self.playerui_y)
         self.playerui=QtWidgets.QWidget(self.mainwindow)
         self.playerui.setGeometry(0,0,1500,900)
+        
 
         self.background=QtWidgets.QLabel(self.playerui)
         self.background.setGeometry(0,0,1500,900)
@@ -52,6 +53,16 @@ class VideoPlayer(object):
         self.videolistlabel.setGeometry(1100,50,310,600)
         self.videolistlabel.setStyleSheet('background:#1C1C1C;')
 
+        self.scrollarea=QtWidgets.QScrollArea(self.playerui)
+        self.scrollarea.setGeometry(1100,50,310,600)
+        self.scrollarea.setWidget(self.videolistlabel)
+
+        
+ 
+        
+        
+    
+
 
         self.videoframe = QtWidgets.QFrame(self.playerui)
 
@@ -60,12 +71,6 @@ class VideoPlayer(object):
         self.videoframe.setFrameShape(QtWidgets.QFrame.Box)
 
         self.videoframe.setFrameShadow(QtWidgets.QFrame.Raised)
-
-        self.vboxlayout = QtWidgets.QVBoxLayout()
-
-        self.vboxlayout.addWidget(self.videoframe)
-
-        
 
         self.buttonlistlabel=QtWidgets.QLabel(self.playerui)
         self.buttonlistlabel.setGeometry(1100,680,310,200)
@@ -80,6 +85,7 @@ class VideoPlayer(object):
         self.miniplayerbutton.setGeometry(860,760,190,25)
         self.miniplayerbutton.setStyleSheet('border-style:dashed;''border-width:2px;''border-color:red;''background:black;''color:white;')
         self.miniplayerbutton.setText('미니 플레이어 사용하기')
+
         
         
 

@@ -21,9 +21,13 @@ class Playlist:
         self.background.setGeometry(0,0,1300,900)
         self.background.setStyleSheet('background: #1C1C1C;')
 
-        self.background2=QtWidgets.QGroupBox(self.playlistui)
+
+        self.background2=QtWidgets.QLabel(self.playlistui)
         self.background2.setGeometry(50,300,1200,550)
-        self.background2.setStyleSheet('background:#000000;''border-color:white;''border-style:dashed;''border-width:3px;')
+        self.background2.setStyleSheet('background:#000000;''border-color:white;''border-style:dashed;''border-width:3px;''color:white;')
+
+        
+        
 
         self.editbutton=QtWidgets.QPushButton(self.playlistui)
         self.editbutton.setGeometry(1130,260,120,30)
@@ -48,6 +52,7 @@ class Playlist:
         self.cancelbutton.setStyleSheet('background: #1C1C1C;''color:white;''border-style:dashed;''border-width:2px;''border-color:red;')
         self.cancelbutton.setText('취소하기')
         self.cancelbutton.hide()
+        
         
 
         self.addpushbutton=QtWidgets.QPushButton(self.playlistui)
