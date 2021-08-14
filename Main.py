@@ -42,6 +42,16 @@ class Mainlogic:
         self.videoplayerui.volumeslider.valueChanged.connect(self.setVolume)
         self.videoplayerui.nextbutton.clicked.connect(self.NextVideo)
         self.videoplayerui.backbutton.clicked.connect(self.PreviousVideo)
+        self.videoplayerui.miniplayerbutton.clicked.connect(self.MiniPlayer)
+        #미니플레이어 함수
+        self.mainlogic.miniplayerui.pausebutton.clicked.connect(self.PlayPause)
+        self.mainlogic.miniplayerui.playbutton.clicked.connect(self.PlayPause)
+        self.mainlogic.miniplayerui.stopbutton.clicked.connect(self.VideoStop)
+        self.mainlogic.miniplayerui.volumeslider.valueChanged.connect(self.setVolume)
+        self.mainlogic.miniplayerui.nextbutton.clicked.connect(self.NextVideo)
+        self.mainlogic.miniplayerui.backbutton.clicked.connect(self.PreviousVideo)
+        self.mainlogic.miniplayerui.backtovideobutton.clicked.connect(self.BackToVideoPlayer)
+
         self.StartProgrem()
 
     ###### 영상 재생 함수
@@ -53,9 +63,13 @@ class Mainlogic:
              self.mediaplayer.pause()
              self.videoplayerui.pausebutton.hide()
              self.videoplayerui.playbutton.show()
+             self.mainlogic.miniplayerui.pausebutton.hide()
+             self.mainlogic.miniplayerui.playbutton.show()
          else:
              self.videoplayerui.playbutton.hide()
              self.videoplayerui.pausebutton.show()
+             self.mainlogic.miniplayerui.pausebutton.show()
+             self.mainlogic.miniplayerui.playbutton.hide()
              self.mediaplayer.play()
              self.isPaused = False
 
@@ -71,9 +85,28 @@ class Mainlogic:
 
 
     #### 재생목록별 영상 재생
+
+    def MiniPlayer(self):
+        self.titlelist=[]
+        self.mainlogic.mainwindow.resize(self.mainlogic.miniplayerui.miniplayer_x,self.mainlogic.miniplayerui.miniplayer_y)
+        self.mainlogic.mainwindow.move(800,400)
+        self.mainlogic.mainwindow.show()
+        self.mainlogic.paper.setCurrentIndex(2)
+        self.videoplayerui.mainwindow.hide()
+        for i in range(0,len(self.videodata.urltitle_forminiplayer)):
+            title=self.videodata.urltitle_forminiplayer[i]
+            title1=pafy.new(title)
+            title2=title1.title
+            self.titlelist.append(title2)
+      
+        self.mainlogic.miniplayerui.videotitle.setText(self.titlelist[self.count])
+        
+
+
     def PlayVideo(self,event,myplaylist):
         
         self.myplaylist=myplaylist
+  
         self.mainlogic.mainwindow.hide()
         self.videoplayerui.mainwindow.show()
         self.videodata=videodatabase.VideoData()
@@ -81,16 +114,17 @@ class Mainlogic:
         
         try:
             self.videodata.FindVideoUrl(self.myplaylist)
-            print(self.videodata.urlbuttonlist[0][0])
+
             for i in range(0,len(self.videodata.myurl)):
-                thumb=self.videodata.urlbuttonlist[i]
-                thumbnail=pafy.new(thumb)
-                thumbnailimg=thumbnail.bigthumb
-                videotitle=thumbnail.title
+                
+                self.thumb=self.videodata.urlbuttonlist[i]
+                self.thumbnail=pafy.new(self.thumb)
+                self.thumbnailimg=self.thumbnail.bigthumb
+                self.videotitle=self.thumbnail.title
                 
                 image=QtGui.QImage()
               
-                image.loadFromData(requests.get(thumbnailimg).content)
+                image.loadFromData(requests.get(self.thumbnailimg).content)
                 image.scaled(225,140)
                 
                 self.videodata.urlbuttonlist[i]=QtWidgets.QLabel(self.videoplayerui.playerui)
@@ -102,7 +136,7 @@ class Mainlogic:
                 self.videodata.urltitle[i]=QtWidgets.QLabel(self.videoplayerui.playerui)
                 self.videodata.urltitle[i].setGeometry(1115,60+(180*i)+150,270,22)
                 self.videodata.urltitle[i].setStyleSheet('color:white;')
-                self.videodata.urltitle[i].setText(videotitle)
+                self.videodata.urltitle[i].setText(self.videotitle)
                 self.videodata.urltitle[i].show()
         
             url = self.videodata.myurl[self.count][0]                                                                                   
@@ -115,8 +149,8 @@ class Mainlogic:
             self.mediaplayer.play()
             
         except IndexError or TypeError:
-            
             pass
+            
 
     def NextVideo(self):
         try:
@@ -130,6 +164,8 @@ class Mainlogic:
             media = self.instance.media_new(playurl)
             self.mediaplayer.set_media(media)
             self.mediaplayer.play() 
+            
+            self.mainlogic.miniplayerui.videotitle.setText(self.titlelist[self.count])
         except IndexError:
             self.count=0 
             url = self.videodata.myurl[self.count][0] 
@@ -140,9 +176,11 @@ class Mainlogic:
             media = self.instance.media_new(playurl)
             self.mediaplayer.set_media(media)
             self.mediaplayer.play() 
-        print(self.count)
+            self.mainlogic.miniplayerui.videotitle.setText(self.titlelist[self.count])
+    
+
     def PreviousVideo(self):
-        print(self.count)
+    
         try:
             self.count-=1 
             self.mediaplayer.stop()
@@ -154,6 +192,7 @@ class Mainlogic:
             media = self.instance.media_new(playurl)
             self.mediaplayer.set_media(media)
             self.mediaplayer.play() 
+            self.mainlogic.miniplayerui.videotitle.setText(self.titlelist[self.count])
         except IndexError:
             self.count=self.videodata.myurl.index(self.videodata.myurl[-1])
             url = self.videodata.myurl[self.count][0] 
@@ -164,6 +203,7 @@ class Mainlogic:
             media = self.instance.media_new(playurl)
             self.mediaplayer.set_media(media)
             self.mediaplayer.play() 
+            self.mainlogic.miniplayerui.videotitle.setText(self.titlelist[self.count])
 
     def StartProgrem(self):
         self.videodata=videodatabase.VideoData()
@@ -187,6 +227,11 @@ class Mainlogic:
         self.videoplayerui.mainwindow.hide()
         self.mediaplayer.stop()
         self.mainlogic.paper.setCurrentIndex(0)
+
+    def BackToVideoPlayer(self):
+        self.videoplayerui.mainwindow.show()
+        self.mainlogic.mainwindow.hide()
+    
 
    
 

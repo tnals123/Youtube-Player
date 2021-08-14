@@ -8,6 +8,7 @@ class SearchUi:
         self.setupUi()
     def setupUi(self):
         self.searchui=QtWidgets.QWidget()
-        self.label=QtWidgets.QLabel(self.searchui)
-        self.label.setGeometry(0,0,200,200)
-        self.label.setText('seacifk')
+
+        self.background=QtWidgets.QLabel(self.searchui)
+        self.background.setGeometry(0,0,600,600)
+        self.background.setStyleSheet('background:black;')

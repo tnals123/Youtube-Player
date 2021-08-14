@@ -44,12 +44,14 @@ class VideoData:
         self.name=name
         self.urlbuttonlist=[]
         self.urltitle=[]
+        self.urltitle_forminiplayer=[]
         self.cur.execute("SELECT * from '"+self.name+"'")
         self.myurl=self.cur.fetchall()
         for i in range(0,len(self.myurl)):
             self.urlbuttonlist.append(self.myurl[i][0])
             self.urltitle.append(self.myurl[i][0])
-        return self.myurl,self.urlbuttonlist,self.urltitle
+            self.urltitle_forminiplayer.append(self.myurl[i][0])
+       
 
        
     def CreatePlaylist(self,name):
