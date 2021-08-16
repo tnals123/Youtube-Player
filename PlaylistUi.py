@@ -21,12 +21,18 @@ class Playlist:
         self.background.setGeometry(0,0,1300,900)
         self.background.setStyleSheet('background: #1C1C1C;')
 
-
-        self.background2=QtWidgets.QLabel(self.playlistui)
-        self.background2.setGeometry(50,300,1200,550)
-        self.background2.setStyleSheet('background:#000000;''border-color:white;''border-style:dashed;''border-width:3px;''color:white;')
+        self.scrollarea=QtWidgets.QScrollArea(self.playlistui)
+        self.scrollarea.setGeometry(50,300,1200,550)
 
         
+
+
+        
+
+        self.playlistlist=QtWidgets.QWidget(self.playlistui)
+        self.playlistlist.setStyleSheet('background:black;')
+
+        self.scrollarea.setWidget(self.playlistlist)
         
 
         self.editbutton=QtWidgets.QPushButton(self.playlistui)
@@ -52,49 +58,60 @@ class Playlist:
         self.cancelbutton.setStyleSheet('background: #1C1C1C;''color:white;''border-style:dashed;''border-width:2px;''border-color:red;')
         self.cancelbutton.setText('취소하기')
         self.cancelbutton.hide()
+
+        self.youtube=QtWidgets.QPushButton(self.playlistui)
+        self.youtube.setGeometry(100,40,150,60)
+        self.youtube.setStyleSheet('background-image:url(youtube.jpg);''border:1px solid #1c1c1c;')
         
         
 
-        self.addpushbutton=QtWidgets.QPushButton(self.playlistui)
+        self.addpushbutton=QtWidgets.QPushButton(self.playlistlist)
         if 100+(300*self.playlistlocate.result[0][0]<=700) :
-            self.addpushbutton.setGeometry(100+(300*self.playlistlocate.result[0][0]),350,200,200)
+            self.addpushbutton.setGeometry(20+(300*self.playlistlocate.result[0][0]),20,200,200)
             if 100+(300*self.playlistlocate.result[0][0])>1000:
-                self.addpushbutton.setGeometry(100+(300*(self.playlistlocate.result[0][0]-4)),350*2-100,200,200)
+                self.addpushbutton.setGeometry(20+(300*(self.playlistlocate.result[0][0]-4)),200*2-100,200,200)
         self.addpushbutton.setStyleSheet('background: black;''border:1px solid black;''background-image:url(plus.png);')
 
         self.playlistlocate.StoreButtons()
         for i in range(0,len(self.playlistlocate.buttonlist2)):
 
            
-            self.playlistlocate.buttonlist[i]=QtWidgets.QPushButton(self.playlistui)
-            self.myplaylistname=QtWidgets.QLabel(self.playlistui)
+            self.playlistlocate.buttonlist[i]=QtWidgets.QPushButton(self.playlistlist)
+            self.myplaylistname=QtWidgets.QLabel(self.playlistlist)
             
 
             if i<=4 :
-                self.playlistlocate.buttonlist[i].setGeometry(100+(300*i),350,200,200)
+                self.playlistlocate.buttonlist[i].setGeometry(20+(300*i),20,200,200)
                 self.playlistlocate.buttonlist[i].setStyleSheet('background:black;''background-image:url(folder.png);')
                 
-                self.myplaylistname.setGeometry(100+(300*i)+40,450,200,200)
+                self.myplaylistname.setGeometry(20+(300*i)+40,240,200,25)
                 self.myplaylistname.setText(self.playlistlocate.buttonlabellist[i])
                 self.myplaylistname.setStyleSheet('color:white;')
 
             if i>=4:
-                self.playlistlocate.buttonlist[i].setGeometry(100+(300*(i-4)),350*2-100,200,200)
+                self.playlistlocate.buttonlist[i].setGeometry(20+(300*(i-4)),200*2-100,200,200)
                 self.playlistlocate.buttonlist[i].setStyleSheet('background:black;''background-image:url(folder.png);')
                     
-                self.myplaylistname.setGeometry(100+(300*(i-4))+40,350*2,200,200)
+                self.myplaylistname.setGeometry(20+(300*(i-4))+40,250*2,200,25)
                 self.myplaylistname.setText(self.playlistlocate.buttonlabellist[i])
                 self.myplaylistname.setStyleSheet('color:white;')
-        
+
+            self.playlistlist.setGeometry(50,300,1200,550+200*(i-6))
+            
         for i in range(0,len(self.playlistlocate.buttonlist2)):
-             self.playlistlocate.deletebutton[i]=QtWidgets.QPushButton(self.playlistui)
+             self.playlistlocate.deletebutton[i]=QtWidgets.QPushButton(self.playlistlist)
              if i<=4 :
-                 self.playlistlocate.deletebutton[i].setGeometry(100+(300*i+170),400,30,30)
+                 self.playlistlocate.deletebutton[i].setGeometry(20+(300*i)+170,60,30,30)
                  self.playlistlocate.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
+                 self.playlistlocate.deletebutton[i].setText('X')
+                 self.playlistlocate.deletebutton[i].setFont(QtGui.QFont(None,15))
                  self.playlistlocate.deletebutton[i].hide()
              if i>=4 :
-                 self.playlistlocate.deletebutton[i].setGeometry(100+(300*(i-4)+170),700,30,30)
+                 self.playlistlocate.deletebutton[i].setGeometry(20+(300*(i-4))+170,360,30,30)
                  self.playlistlocate.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
+                 self.playlistlocate.deletebutton[i].setText('X')
+                 self.playlistlocate.deletebutton[i].setFont(QtGui.QFont(None,15))
                  self.playlistlocate.deletebutton[i].hide()
+        
       
        

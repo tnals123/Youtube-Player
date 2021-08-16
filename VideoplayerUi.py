@@ -19,6 +19,8 @@ class VideoPlayer(object):
         self.background.setGeometry(0,0,1500,900)
         self.background.setStyleSheet('background:black;')
 
+        
+
         self.backbutton=QtWidgets.QPushButton(self.playerui)
         self.backbutton.setGeometry(50,760,30,30)
         self.backbutton.setStyleSheet('background-image:url(previous.jpg);''border:1px solid black;')
@@ -49,13 +51,14 @@ class VideoPlayer(object):
         self.stopbutton.setGeometry(150,760,30,30)
         self.stopbutton.setStyleSheet('background-image:url(stop.jpg);''border:1px solid black;')
 
-        self.videolistlabel=QtWidgets.QLabel(self.playerui)
+        self.videolistlabel=QtWidgets.QScrollArea(self.playerui)
         self.videolistlabel.setGeometry(1100,50,310,600)
-        self.videolistlabel.setStyleSheet('background:#1C1C1C;')
+        
+        self.videolistlabelarea=QtWidgets.QWidget(self.playerui)
+        self.videolistlabelarea.setStyleSheet('background:black;')
 
-        self.scrollarea=QtWidgets.QScrollArea(self.playerui)
-        self.scrollarea.setGeometry(1100,50,310,600)
-        self.scrollarea.setWidget(self.videolistlabel)
+        self.videolistlabel.setWidget(self.videolistlabelarea)
+
 
         
  
@@ -75,6 +78,19 @@ class VideoPlayer(object):
         self.buttonlistlabel=QtWidgets.QLabel(self.playerui)
         self.buttonlistlabel.setGeometry(1100,680,310,200)
         self.buttonlistlabel.setStyleSheet('background:#1C1C1C;')
+
+        self.onesongbutton=QtWidgets.QPushButton(self.playerui)
+        self.onesongbutton.setGeometry(1180,730,150,25)
+        self.onesongbutton.setText('한곡 재생')
+
+        self.orderbutton=QtWidgets.QPushButton(self.playerui)
+        self.orderbutton.setGeometry(1180,780,150,25)
+        self.orderbutton.setText('순차 재생')
+
+        self.randombutton=QtWidgets.QPushButton(self.playerui)
+        self.randombutton.setGeometry(1180,830,150,25)
+        self.randombutton.setText('셔플 재생')
+        
         
         self.previouspagebutton=QtWidgets.QPushButton(self.playerui)
         self.previouspagebutton.setGeometry(650,760,190,25)
@@ -85,6 +101,8 @@ class VideoPlayer(object):
         self.miniplayerbutton.setGeometry(860,760,190,25)
         self.miniplayerbutton.setStyleSheet('border-style:dashed;''border-width:2px;''border-color:red;''background:black;''color:white;')
         self.miniplayerbutton.setText('미니 플레이어 사용하기')
+
+        
 
         
         

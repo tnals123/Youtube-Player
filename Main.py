@@ -1,8 +1,12 @@
 
 from urllib import request
 from PyQt5 import QtCore, QtGui, QtWidgets
+import threading
 import sys
+import time
 import vlc
+import webbrowser
+import random
 import pafy
 import ConnectUi
 import videodatabase
@@ -22,6 +26,8 @@ class Mainlogic:
         
         self.instance = vlc.Instance()
         self.mediaplayer = self.instance.media_player_new()
+        
+        
 
         if sys.platform.startswith("linux"):  # for Linux using the X Server
             self.mediaplayer.set_xwindow(self.videoplayerui.videoframe.winId())
@@ -30,6 +36,7 @@ class Mainlogic:
         elif sys.platform == "darwin":  # for MacOS
             self.mediaplayer.set_nsobject(self.videoplayerui.videoframe.winId())
 
+        self.mainlogic.playlist.youtube.clicked.connect(self.OpenYouTube)
         self.mainlogic.playlist.addpushbutton.clicked.connect(self.CheckAddPlaylist)
         self.mainlogic.check.cancelbutton.clicked.connect(self.Uihide)
         self.mainlogic.check.addpushbutton.mousePressEvent=lambda event,name2=self.mainlogic.playlist.addpushbutton:self.AddPlaylist(event,name2)
@@ -45,6 +52,9 @@ class Mainlogic:
         self.videoplayerui.nextbutton.clicked.connect(self.NextVideo)
         self.videoplayerui.backbutton.clicked.connect(self.PreviousVideo)
         self.videoplayerui.miniplayerbutton.clicked.connect(self.MiniPlayer)
+        self.videoplayerui.onesongbutton.clicked.connect(self.RepeatPlay)
+        self.videoplayerui.orderbutton.clicked.connect(self.OrderedPlay)
+        self.videoplayerui.randombutton.clicked.connect(self.ShufflePlay)
         #미니플레이어 함수
         self.mainlogic.miniplayerui.pausebutton.clicked.connect(self.PlayPause)
         self.mainlogic.miniplayerui.playbutton.clicked.connect(self.PlayPause)
@@ -58,13 +68,18 @@ class Mainlogic:
 
         #검색창 함수
         self.mainlogic.search.okbutton.clicked.connect(self.AddVideoToPlayList)
+        self.mainlogic.search.backtoplaylist.clicked.connect(self.BackToPlaylist)
 
+
+    def OpenYouTube(self):
+        
+        webbrowser.open("https://www.youtube.com/")        
     ###### 재생목록에 영상 추가 함수
 
     def PlayListButtonChect(self,event,button):
         self.button=button
         self.button.setDisabled(True)
-        print(self.button.text())
+        
 
 
     def AddVideoToPlayList(self):
@@ -74,12 +89,12 @@ class Mainlogic:
                 self.buttonlist.append(self.mainlogic.search.videodata.buttonlist[i].text())
          
         self.search=self.mainlogic.search.searchlineedit.text()
-        print(self.buttonlist)
+        
         results = YoutubeSearch(self.search, max_results=1).to_json()
         results_dict = json.loads(results)
         for v in results_dict['videos']:
             url='https://www.youtube.com' + v['url_suffix']
-            print(url)
+            
         for i in range(0,len(self.buttonlist)):
            
             self.videodata.AddVideoToPlayList(self.buttonlist[i],url)
@@ -87,6 +102,55 @@ class Mainlogic:
            
 
     ###### 영상 재생 함수
+
+    def RepeatPlay(self):
+        self.videothread=VideoThread_Repeat(self.mediaplayer)
+        self.videoplayerui.onesongbutton.setDisabled(True)
+        self.videoplayerui.orderbutton.setDisabled(False)
+        self.videoplayerui.randombutton.setDisabled(False)
+        
+        
+        try:
+            self.videothread_ordered.videocount=0
+            self.videothread_shuffled.videocount=0
+          
+        except AttributeError:
+            pass
+        self.videothread.start()
+        
+        
+    def OrderedPlay(self):
+        self.videothread_ordered=VideoThread_Ordered(self.mediaplayer,self.count,self.videodata.titlelist,self.instance)
+        self.videoplayerui.onesongbutton.setDisabled(False)
+        self.videoplayerui.orderbutton.setDisabled(True)
+        self.videoplayerui.randombutton.setDisabled(False)
+
+        
+        try:
+            self.videothread_shuffled.videocount=0
+            self.videothread.videoend=0
+            
+        except AttributeError:
+            pass
+        self.videothread_ordered.start()
+       
+    def ShufflePlay(self):
+        self.videothread_shuffled=VideoThread_Shuffled(self.mediaplayer,self.count,self.videodata.titlelist,self.instance)
+        self.videoplayerui.onesongbutton.setDisabled(False)
+        self.videoplayerui.orderbutton.setDisabled(False)
+        self.videoplayerui.randombutton.setDisabled(True)
+
+        
+        try:
+            self.videothread.videoend=0
+            self.videothread_ordered.videocount=0
+       
+        except AttributeError:
+            pass
+
+        self.videothread_shuffled.start()
+       
+        
 
     def PlayPause(self):
          """Toggle play/pause status
@@ -138,7 +202,13 @@ class Mainlogic:
     def PlayVideo(self,event,myplaylist):
         
         self.myplaylist=myplaylist
-  
+        try:
+            self.videothread_ordered.videocount=0
+            self.videothread_shuffled.videocount=0
+            self.videothread.videoend=0
+        except AttributeError:
+            pass
+            
         self.mainlogic.mainwindow.hide()
         self.videoplayerui.mainwindow.show()
         self.videodata=videodatabase.VideoData()
@@ -148,28 +218,38 @@ class Mainlogic:
             self.videodata.FindVideoUrl(self.myplaylist)
 
             for i in range(0,len(self.videodata.myurl)):
-               
-                self.thumb=self.videodata.urlbuttonlist[i]
-                self.thumbnail=pafy.new(self.thumb)
-                self.thumbnailimg=self.thumbnail.bigthumb
-                self.videotitle=self.thumbnail.title
+                try:
+                    self.thumb=self.videodata.urlbuttonlist[i]
+                    self.thumbnail=pafy.new(self.thumb)
+                    self.thumbnailimg=self.thumbnail.bigthumb
+                    self.videotitle=self.thumbnail.title
+                except KeyError:
+                    pass
                 
                 image=QtGui.QImage()
               
                 image.loadFromData(requests.get(self.thumbnailimg).content)
                 image.scaled(225,140)
                 
-                self.videodata.urlbuttonlist[i]=QtWidgets.QLabel(self.videoplayerui.videolistlabel)
-                self.videodata.urlbuttonlist[i].setGeometry(0,60+(180*i),280,140)
+                self.videodata.urlbuttonlist[i]=QtWidgets.QLabel(self.videoplayerui.videolistlabelarea)
+                self.videodata.urlbuttonlist[i].setGeometry(0,40+(200*i),280,140)
                 self.videodata.urlbuttonlist[i].setStyleSheet('background:white;')
                 self.videodata.urlbuttonlist[i].setPixmap(QtGui.QPixmap(image))
+                self.videodata.urlbuttonlist[i].mousePressEvent=lambda event,video=self.videotitle,playlist=self.myplaylist:self.SelectVideo(event,video,playlist)
                 self.videodata.urlbuttonlist[i].show()
+                
 
-                self.videodata.urltitle[i]=QtWidgets.QLabel(self.videoplayerui.videolistlabel)
-                self.videodata.urltitle[i].setGeometry(0,60+(180*i)+150,270,22)
+                self.videodata.urltitle[i]=QtWidgets.QLabel(self.videoplayerui.videolistlabelarea)
+                self.videodata.urltitle[i].setGeometry(0,60+(200*i)+130,270,22)
                 self.videodata.urltitle[i].setStyleSheet('color:white;')
                 self.videodata.urltitle[i].setText(self.videotitle)
                 self.videodata.urltitle[i].show()
+                self.videodata.urltitle[i].mousePressEvent=lambda event,video=self.videotitle,playlist=self.myplaylist:self.SelectVideo(event,video,playlist)
+                if i<=3:
+                    self.videoplayerui.videolistlabelarea.setGeometry(1100,50,310,600)
+                else:
+                    self.videoplayerui.videolistlabelarea.setGeometry(1100,50,310,600+(500*(i-3)))
+                
         
             url = self.videodata.myurl[self.count][0]                                                                                   
             video = pafy.new(url)                                                                                                                       
@@ -183,6 +263,31 @@ class Mainlogic:
         except IndexError or TypeError:
 
             pass
+
+    def SelectVideo(self,event,video,playlist):
+        self.list=[]
+        self.playlist=playlist
+        self.video=video
+        self.videodata.FindVideoUrl(self.myplaylist)
+        for i in range(0,len(self.videodata.urltitle)):
+            try:
+                self.videotitle=pafy.new(self.videodata.urltitle[i])
+                self.videotitle2=self.videotitle.title
+                self.list.append(self.videotitle2)
+            except KeyError:
+                pass
+        self.count=self.list.index(self.video)
+      
+        url = self.videodata.myurl[self.count][0]                                                                                   
+        video = pafy.new(url)                                                                                                                       
+        best = video.getbest()                                                                                                                 
+        playurl = best.url                                                                                                                          
+                                                                                        
+        media = self.instance.media_new(playurl)
+        self.mediaplayer.set_media(media)
+        self.mediaplayer.play()
+
+
 
     def NextVideo2(self):
         try:
@@ -316,17 +421,28 @@ class Mainlogic:
         self.mainlogic.mainwindow.resize(self.mainlogic.playlist.playlistui_x,self.mainlogic.playlist.playlistui_y)
         self.mainlogic.mainwindow.show()
         self.videoplayerui.mainwindow.hide()
+        
         self.mediaplayer.stop()
+        self.count=0
+        try:
+            self.videothread.videoend=0
+            self.videothread_shuffled.videocount=0
+            self.videothread_ordered.videocount=0
+        except AttributeError:
+            pass
         
         self.mainlogic.paper.setCurrentIndex(0)
 
     def BackToVideoPlayer(self):
         self.videoplayerui.mainwindow.show()
         self.mainlogic.mainwindow.hide()
+
+    def BackToPlaylist(self):
+        self.mainlogic.mainwindow.move(250,50)
+        self.mainlogic.mainwindow.resize(self.mainlogic.playlist.playlistui_x,self.mainlogic.playlist.playlistui_y)
+        self.mainlogic.paper.setCurrentIndex(0)
     
 
-    def asdf(self):
-       print('asdf')
 
     #애니메이션 처리
     def EnterAnimation(self,event):
@@ -359,39 +475,42 @@ class Mainlogic:
         self.videodata.StoreButtons()
         self.mainlogic.playlist.applybutton.show()
         self.mainlogic.playlist.cancelbutton.show()
+
+        
         try:
             for i in range(0,len(self.videodata.deletebutton)):
+                
                 self.videodata.deletebutton[i]=QtWidgets.QPushButton(self.mainlogic.playlist.playlistui)
                 
-                if 100+(300*i)<=1000 :
-                    self.videodata.deletebutton[i].setGeometry(100+(300*i+170),400,30,30)
-                    self.videodata.deletebutton[i].setStyleSheet('background:red;''border-radius:15px;')
-                    self.videodata.deletebutton[i].setText('X')
-                    self.videodata.deletebutton[i].setFont(QtGui.QFont(None,15))
-                    self.videodata.deletebutton[i].show()
+                # if 100+(300*i)<=1000 :
+                #     self.videodata.deletebutton[i].setGeometry(100+(300*i+170),400,30,30)
+                #     self.videodata.deletebutton[i].setStyleSheet('background:red;''border-radius:15px;')
+                #     self.videodata.deletebutton[i].setText('X')
+                #     self.videodata.deletebutton[i].setFont(QtGui.QFont(None,15))
+                #     self.videodata.deletebutton[i].show()
                 
-                elif 100+(300*i)>=1300:
-                    self.videodata.deletebutton[i].setGeometry(100+(300*(i-4)+170),660,30,30)
-                    self.videodata.deletebutton[i].setStyleSheet('background:red;''border-radius:15px;')
-                    self.videodata.deletebutton[i].setText('X')
-                    self.videodata.deletebutton[i].setFont(QtGui.QFont(None,15))
-                    self.videodata.deletebutton[i].show()
-                    self.videodata.deletebutton[i].show()
+                # elif 100+(300*i)>=1300:
+                #     self.videodata.deletebutton[i].setGeometry(100+(300*(i-4)+170),660,30,30)
+                #     self.videodata.deletebutton[i].setStyleSheet('background:red;''border-radius:15px;')
+                #     self.videodata.deletebutton[i].setText('X')
+                #     self.videodata.deletebutton[i].setFont(QtGui.QFont(None,15))
+                #     self.videodata.deletebutton[i].show()
+                #     self.videodata.deletebutton[i].show()
         except AttributeError:
             pass
             
         for i in range(0,len(self.mainlogic.playlist.playlistlocate.deletebutton)):
             
-            if i<=4 :
-                self.mainlogic.playlist.playlistlocate.deletebutton[i].setGeometry(100+(300*i+170),400,30,30)
-                self.mainlogic.playlist.playlistlocate.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
-                self.mainlogic.playlist.playlistlocate.deletebutton[i].setText('X')
-                self.mainlogic.playlist.playlistlocate.deletebutton[i].setFont(QtGui.QFont(None,15))
-            if i>=4 :
-                self.mainlogic.playlist.playlistlocate.deletebutton[i].setGeometry(100+(300*(i-4)+170),660,30,30)
-                self.mainlogic.playlist.playlistlocate.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
-                self.mainlogic.playlist.playlistlocate.deletebutton[i].setText('X')
-                self.mainlogic.playlist.playlistlocate.deletebutton[i].setFont(QtGui.QFont(None,15))
+            # if i<=4 :
+            #     self.mainlogic.playlist.playlistlocate.deletebutton[i].setGeometry(100+(300*i+170),400,30,30)
+            #     self.mainlogic.playlist.playlistlocate.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
+            #     self.mainlogic.playlist.playlistlocate.deletebutton[i].setText('X')
+            #     self.mainlogic.playlist.playlistlocate.deletebutton[i].setFont(QtGui.QFont(None,15))
+            # if i>=4 :
+            #     self.mainlogic.playlist.playlistlocate.deletebutton[i].setGeometry(100+(300*(i-4)+170),660,30,30)
+            #     self.mainlogic.playlist.playlistlocate.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
+            #     self.mainlogic.playlist.playlistlocate.deletebutton[i].setText('X')
+            #     self.mainlogic.playlist.playlistlocate.deletebutton[i].setFont(QtGui.QFont(None,15))
             self.mainlogic.playlist.playlistlocate.deletebutton[i].show()
 
             self.mainlogic.playlist.editbutton.hide()
@@ -474,6 +593,133 @@ class Mainlogic:
                 self.videodata.buttonlist[self.videodata.result[0][0]].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[self.videodata.result[0][0]]:self.PlayVideo(event,myplaylist)
 
                 self.videodata.buttonlist[self.videodata.result[0][0]].show()
+
+
+class VideoThread_Repeat(threading.Thread):
+    def __init__(self,video):
+        threading.Thread.__init__(self)
+        self.videoend=1
+        self.video=video
+
+    def run(self):
+        
+        while True:
+            current_state = str(self.video.get_state())
+            time.sleep(1)
+           
+            if current_state == 'State.Ended':
+                self.video.stop()
+                self.video.play()
+                
+            if self.videoend==0:
+                break
+
+class VideoThread_Ordered(threading.Thread):
+
+    def __init__(self,mediaplayer,count,urllist,instance):
+        threading.Thread.__init__(self)
+        self.mediaplayer=mediaplayer
+        self.count=count
+        self.urllist=urllist
+        self.instance=instance
+        self.videocount=1
+    def run(self):
+        while True:
+            
+            current_state = str(self.mediaplayer.get_state())
+            time.sleep(1)
+          
+                
+            if current_state == 'State.Ended':
+             
+               
+                self.count+=1
+                try:
+                    self.mediaplayer.stop()
+                    url=self.urllist[self.count]
+                    try:
+                        video=pafy.new(url)
+                    except KeyError:
+                        pass
+                    best=video.getbest()
+                    playurl=best.url
+                    media=self.instance.media_new(playurl)
+                    self.mediaplayer.set_media(media)
+                    self.mediaplayer.play()
+                except IndexError:
+                    self.count=0
+                    self.mediaplayer.stop()
+                    url=self.urllist[self.count]
+                    try:
+                        video=pafy.new(url)
+                    except KeyError:
+                        pass
+                    best=video.getbest()
+                    playurl=best.url
+                    media=self.instance.media_new(playurl)
+                    self.mediaplayer.set_media(media)
+                    self.mediaplayer.play()
+
+            if self.videocount==0:
+                break
+
+
+
+class VideoThread_Shuffled(threading.Thread):
+    def __init__(self,mediaplayer,count,urllist,instance):
+        threading.Thread.__init__(self)
+        self.mediaplayer=mediaplayer
+        self.count=count
+        self.urllist=urllist
+        self.instance=instance
+        self.videocount=1
+
+    def run(self):
+        while True:
+            current_state = str(self.mediaplayer.get_state())
+            time.sleep(1)
+          
+                
+            if current_state == 'State.Ended':
+             
+               
+                self.count=random.randint(0,len(self.urllist))
+                try:
+                    self.mediaplayer.stop()
+                    url=self.urllist[self.count]
+                    try:
+                        video=pafy.new(url)
+                    except KeyError:
+                        pass
+                    best=video.getbest()
+                    playurl=best.url
+                    media=self.instance.media_new(playurl)
+                    self.mediaplayer.set_media(media)
+                    self.mediaplayer.play()
+                except IndexError:
+                    self.count=0
+                    self.mediaplayer.stop()
+                    url=self.urllist[self.count]
+                    try:
+                        video=pafy.new(url)
+                    except KeyError:
+                        pass
+                    best=video.getbest()
+                    playurl=best.url
+                    media=self.instance.media_new(playurl)
+                    self.mediaplayer.set_media(media)
+                    self.mediaplayer.play()
+
+            if self.videocount==0:
+                break
+
+
+
+
+    
+
+            
+
 
     
       
