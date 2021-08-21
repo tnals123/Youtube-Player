@@ -10,7 +10,6 @@ import random
 import pafy
 import ConnectUi
 import videodatabase
-import videoplayerlogic
 import VideoplayerUi
 import requests
 from youtube_search import YoutubeSearch
@@ -55,6 +54,8 @@ class Mainlogic:
         self.videoplayerui.onesongbutton.clicked.connect(self.RepeatPlay)
         self.videoplayerui.orderbutton.clicked.connect(self.OrderedPlay)
         self.videoplayerui.randombutton.clicked.connect(self.ShufflePlay)
+        self.mainlogic.playlist.applybutton.clicked.connect(self.ApplyButton)
+        
         #미니플레이어 함수
         self.mainlogic.miniplayerui.pausebutton.clicked.connect(self.PlayPause)
         self.mainlogic.miniplayerui.playbutton.clicked.connect(self.PlayPause)
@@ -183,6 +184,7 @@ class Mainlogic:
     #### 재생목록별 영상 재생
 
     def MiniPlayer(self):
+        self.mainlogic.mainwindow.setWindowTitle("Mini Player")
         self.titlelist=[]
         self.mainlogic.mainwindow.resize(self.mainlogic.miniplayerui.miniplayer_x,self.mainlogic.miniplayerui.miniplayer_y)
         self.mainlogic.mainwindow.move(800,400)
@@ -200,7 +202,7 @@ class Mainlogic:
 
 
     def PlayVideo(self,event,myplaylist):
-        
+        self.videoplayerui.mainwindow.setWindowTitle("Video Player")
         self.myplaylist=myplaylist
         try:
             self.videothread_ordered.videocount=0
@@ -245,10 +247,10 @@ class Mainlogic:
                 self.videodata.urltitle[i].setText(self.videotitle)
                 self.videodata.urltitle[i].show()
                 self.videodata.urltitle[i].mousePressEvent=lambda event,video=self.videotitle,playlist=self.myplaylist:self.SelectVideo(event,video,playlist)
-                if i<=3:
-                    self.videoplayerui.videolistlabelarea.setGeometry(1100,50,310,600)
-                else:
-                    self.videoplayerui.videolistlabelarea.setGeometry(1100,50,310,600+(500*(i-3)))
+            if len(self.videodata.myurl)<=3:
+                self.videoplayerui.videolistlabelarea.setGeometry(1100,50,310,700)
+            else:
+                self.videoplayerui.videolistlabelarea.setGeometry(1100,50,310,800+(500*(len(self.videodata.myurl)-3)))
                 
         
             url = self.videodata.myurl[self.count][0]                                                                                   
@@ -409,6 +411,7 @@ class Mainlogic:
 
     #페이지 이동
     def SearchPage(self):
+        self.mainlogic.mainwindow.setWindowTitle("Search Page")
         self.mainlogic.mainwindow.resize(self.mainlogic.search.searchui_x,self.mainlogic.search.searchui_y)
         self.mainlogic.mainwindow.move(600,200)
         self.mainlogic.search.ChoicePlaylist()
@@ -417,6 +420,7 @@ class Mainlogic:
         self.mainlogic.paper.setCurrentIndex(1)
 
     def BackToVideoList(self):
+        self.mainlogic.mainwindow.setWindowTitle("Playlist")
         self.mainlogic.mainwindow.move(250,50)
         self.mainlogic.mainwindow.resize(self.mainlogic.playlist.playlistui_x,self.mainlogic.playlist.playlistui_y)
         self.mainlogic.mainwindow.show()
@@ -434,10 +438,12 @@ class Mainlogic:
         self.mainlogic.paper.setCurrentIndex(0)
 
     def BackToVideoPlayer(self):
+        self.videoplayerui.mainwindow.setWindowTitle("Playlist")
         self.videoplayerui.mainwindow.show()
         self.mainlogic.mainwindow.hide()
 
     def BackToPlaylist(self):
+        self.mainlogic.mainwindow.setWindowTitle("Playlist")
         self.mainlogic.mainwindow.move(250,50)
         self.mainlogic.mainwindow.resize(self.mainlogic.playlist.playlistui_x,self.mainlogic.playlist.playlistui_y)
         self.mainlogic.paper.setCurrentIndex(0)
@@ -471,50 +477,52 @@ class Mainlogic:
 
 
     def VideoListEditButton(self):
+        self.changelist=[]
         self.videodata=videodatabase.VideoData()
         self.videodata.StoreButtons()
         self.mainlogic.playlist.applybutton.show()
         self.mainlogic.playlist.cancelbutton.show()
-
+        self.mainlogic.playlist.addpushbutton.setDisabled(True)
         
-        try:
-            for i in range(0,len(self.videodata.deletebutton)):
-                
-                self.videodata.deletebutton[i]=QtWidgets.QPushButton(self.mainlogic.playlist.playlistui)
-                
-                # if 100+(300*i)<=1000 :
-                #     self.videodata.deletebutton[i].setGeometry(100+(300*i+170),400,30,30)
-                #     self.videodata.deletebutton[i].setStyleSheet('background:red;''border-radius:15px;')
-                #     self.videodata.deletebutton[i].setText('X')
-                #     self.videodata.deletebutton[i].setFont(QtGui.QFont(None,15))
-                #     self.videodata.deletebutton[i].show()
-                
-                # elif 100+(300*i)>=1300:
-                #     self.videodata.deletebutton[i].setGeometry(100+(300*(i-4)+170),660,30,30)
-                #     self.videodata.deletebutton[i].setStyleSheet('background:red;''border-radius:15px;')
-                #     self.videodata.deletebutton[i].setText('X')
-                #     self.videodata.deletebutton[i].setFont(QtGui.QFont(None,15))
-                #     self.videodata.deletebutton[i].show()
-                #     self.videodata.deletebutton[i].show()
-        except AttributeError:
-            pass
-            
+       
+       
         for i in range(0,len(self.mainlogic.playlist.playlistlocate.deletebutton)):
             
-            # if i<=4 :
-            #     self.mainlogic.playlist.playlistlocate.deletebutton[i].setGeometry(100+(300*i+170),400,30,30)
-            #     self.mainlogic.playlist.playlistlocate.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
-            #     self.mainlogic.playlist.playlistlocate.deletebutton[i].setText('X')
-            #     self.mainlogic.playlist.playlistlocate.deletebutton[i].setFont(QtGui.QFont(None,15))
-            # if i>=4 :
-            #     self.mainlogic.playlist.playlistlocate.deletebutton[i].setGeometry(100+(300*(i-4)+170),660,30,30)
-            #     self.mainlogic.playlist.playlistlocate.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
-            #     self.mainlogic.playlist.playlistlocate.deletebutton[i].setText('X')
-            #     self.mainlogic.playlist.playlistlocate.deletebutton[i].setFont(QtGui.QFont(None,15))
-            self.mainlogic.playlist.playlistlocate.deletebutton[i].show()
+            self.changebuttonname=QtWidgets.QLineEdit(self.mainlogic.playlist.playlistlist)
+            self.changelist.append(self.changebuttonname)
+            if i<4:
+                self.changelist[i].setGeometry(20+(300*i)+40,240,150,25)
+                self.changelist[i].setText(self.mainlogic.playlist.playlistlocate.buttonlabellist[i])
+                self.changelist[i].setStyleSheet('color:black;''background:white;')
+                self.changelist[i].show()  
+            if i>=4:
+                self.changelist[i].setGeometry(20+(300*(i-4)),200*2-100,150,200)
+                self.changelist[i].setText(self.mainlogic.playlist.playlistlocate.buttonlabellist[i])
+                self.changelist[i].setStyleSheet('color:black;''background:white;')
+                self.changelist[i].show() 
 
+
+
+
+            self.mainlogic.playlist.playlistlocate.deletebutton[i].show()
             self.mainlogic.playlist.editbutton.hide()
+
+    def ApplyButton(self):
+        for i in range(0,len(self.mainlogic.playlist.playlistlocate.buttonlabellist)):
             
+            self.mainlogic.playlist.playlistlocate.buttonlabellist[i]=self.changelist[i].text()
+            
+            self.newplaylistname=QtWidgets.QLabel(self.mainlogic.playlist.playlistlist)
+            if i<4:
+                self.newplaylistname.setGeometry(20+(300*i)+40,240,200,25)
+                self.newplaylistname.setText(self.mainlogic.playlist.playlistlocate.buttonlabellist[i])
+                self.newplaylistname.setStyleSheet('color:white;')
+            if i>=4:
+                self.newplaylistname.setGeometry(20+(300*(i-4))+40,240,200,25)
+                self.newplaylistname.setText(self.mainlogic.playlist.playlistlocate.buttonlabellist[i])
+                self.newplaylistname.setStyleSheet('color:white;')
+
+
 
     def CanCelEdit(self):
         
@@ -525,8 +533,8 @@ class Mainlogic:
     
         for i in range(0,len(self.mainlogic.playlist.playlistlocate.deletebutton)):
             self.mainlogic.playlist.playlistlocate.deletebutton[i].hide()
-        for i in range(0,len(self.videodata.deletebutton)):
-            self.videodata.deletebutton[i].hide()
+            self.changelist[i].hide()
+        
 
     #재생목록 추가 관련 함수
 

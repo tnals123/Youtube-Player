@@ -29,6 +29,7 @@ class Connect(object):
 
     def setupUi(self):
         self.mainwindow.resize(1300,900)
+        self.mainwindow.setWindowTitle("PlayList")
         self.paper=QtWidgets.QStackedWidget(self.mainwindow)
         self.paper.setGeometry(0,0,1500,900)
 

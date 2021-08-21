@@ -59,20 +59,9 @@ class VideoPlayer(object):
 
         self.videolistlabel.setWidget(self.videolistlabelarea)
 
-
-        
- 
-        
-        
-    
-
-
         self.videoframe = QtWidgets.QFrame(self.playerui)
-
         self.videoframe.setGeometry(QtCore.QRect(50, 50, 1000, 700))
-
         self.videoframe.setFrameShape(QtWidgets.QFrame.Box)
-
         self.videoframe.setFrameShadow(QtWidgets.QFrame.Raised)
 
         self.buttonlistlabel=QtWidgets.QLabel(self.playerui)

@@ -68,6 +68,19 @@ class VideoData:
         self.cur.execute("INSERT INTO buttonname VALUES('"+self.name+"')")
         self.conn.commit()
 
+    def ChangePlaylist(self,name,changename):
+        self.name=name
+        self.changename=changename
+        self.cur.execute("ALTER TABLE '"+self.name+"' RENAME TO '"+self.changename+"'")
+        self.conn.commit()
+
+    def DeletePlaylist(self,name,label):
+        self.name=name
+        self.label=label
+        self.cur.execute("DELETE TABLE '"+self.name+"' ")
+        self.name.destroy()
+        self.label.destroy()
+        self.conn.commit()
     
     def StoreButtons(self):
         self.buttonlist=[]
@@ -95,5 +108,5 @@ class VideoData:
 
 asdf=VideoData()
 asdf.StoreButtons()
-asdf.FindVideoUrl('재생목록0')
+
 

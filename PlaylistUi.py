@@ -23,7 +23,7 @@ class Playlist:
 
         self.scrollarea=QtWidgets.QScrollArea(self.playlistui)
         self.scrollarea.setGeometry(50,300,1200,550)
-
+        
         
 
 
@@ -31,7 +31,8 @@ class Playlist:
 
         self.playlistlist=QtWidgets.QWidget(self.playlistui)
         self.playlistlist.setStyleSheet('background:black;')
-
+        self.playlistlist.setGeometry(50,300,1170,670)
+        
         self.scrollarea.setWidget(self.playlistlist)
         
 
@@ -87,6 +88,7 @@ class Playlist:
                 self.myplaylistname.setGeometry(20+(300*i)+40,240,200,25)
                 self.myplaylistname.setText(self.playlistlocate.buttonlabellist[i])
                 self.myplaylistname.setStyleSheet('color:white;')
+                
 
             if i>=4:
                 self.playlistlocate.buttonlist[i].setGeometry(20+(300*(i-4)),200*2-100,200,200)
@@ -96,7 +98,7 @@ class Playlist:
                 self.myplaylistname.setText(self.playlistlocate.buttonlabellist[i])
                 self.myplaylistname.setStyleSheet('color:white;')
 
-            self.playlistlist.setGeometry(50,300,1200,550+200*(i-6))
+            
             
         for i in range(0,len(self.playlistlocate.buttonlist2)):
              self.playlistlocate.deletebutton[i]=QtWidgets.QPushButton(self.playlistlist)
