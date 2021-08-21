@@ -17,6 +17,7 @@ class VideoData:
         
         # self.cur.execute("UPDATE count SET count=0")
         # self.cur.execute("DELETE FROM buttonname")
+        # self.cur.execute("ALTER TABLE '게임영상' RENAME TO '123'")
         # self.conn.commit()
     def __del__(self):
         self.conn.close()
@@ -69,6 +70,13 @@ class VideoData:
         self.conn.commit()
 
     def ChangePlaylist(self,name,changename):
+        self.name=name
+        self.changename=changename
+        self.cur.execute("UPDATE buttonname SET name= '"+self.changename+"' WHERE name='"+self.name+"'")
+        #self.cur.execute("ALTER TABLE '"+self.name+"' RENAME TO '"+self.changename+"'")
+        self.conn.commit()
+
+    def ChangeTable(self,name,changename):
         self.name=name
         self.changename=changename
         self.cur.execute("ALTER TABLE '"+self.name+"' RENAME TO '"+self.changename+"'")

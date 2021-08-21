@@ -2,6 +2,7 @@
 from urllib import request
 from PyQt5 import QtCore, QtGui, QtWidgets
 import threading
+import sqlite3
 import sys
 import time
 import vlc
@@ -508,12 +509,20 @@ class Mainlogic:
             self.mainlogic.playlist.editbutton.hide()
 
     def ApplyButton(self):
+        self.videodata=videodatabase.VideoData()
         self.mainlogic.playlist.addpushbutton.setDisabled(False)
         self.mainlogic.playlist.applybutton.hide()
         self.mainlogic.playlist.cancelbutton.hide()
         self.mainlogic.playlist.editbutton.show()
+        print(self.mainlogic.playlist.playlistlocate.buttonlabellist)
         for i in range(0,len(self.mainlogic.playlist.playlistlocate.buttonlabellist)):
+            try:
+                self.videodata.ChangeTable(self.mainlogic.playlist.playlistlocate.buttonlabellist[i],self.changelist[i].text())
+                self.videodata.ChangePlaylist(self.mainlogic.playlist.playlistlocate.buttonlabellist[i],self.changelist[i].text())
+            except sqlite3.OperationalError:
+                pass
             self.mainlogic.playlist.playlistlocate.buttonlabellist[i]=self.changelist[i].text()
+            
             self.changelist[i].hide()
             self.mainlogic.playlist.playlistlocate.mybuttonlabellist[i].setText(self.mainlogic.playlist.playlistlocate.buttonlabellist[i])
 
