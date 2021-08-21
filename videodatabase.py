@@ -85,6 +85,7 @@ class VideoData:
     def StoreButtons(self):
         self.buttonlist=[]
         self.buttonlabellist=[]
+        self.mybuttonlabellist=[]
         self.deletebutton=[]
         self.strbutton=[]
         self.cur.execute("SELECT * from buttonname")
@@ -96,6 +97,7 @@ class VideoData:
                 self.buttonlabellist.append(self.buttonlist2[i][0])
                 self.deletebutton.append(self.buttonlist2[i][0])
                 self.strbutton.append(self.buttonlist2[i][0])
+                self.mybuttonlabellist.append(self.buttonlist2[i][0])
                 
         except IndexError:
             pass

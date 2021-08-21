@@ -78,25 +78,25 @@ class Playlist:
 
            
             self.playlistlocate.buttonlist[i]=QtWidgets.QPushButton(self.playlistlist)
-            self.myplaylistname=QtWidgets.QLabel(self.playlistlist)
+            self.playlistlocate.mybuttonlabellist[i]=QtWidgets.QLabel(self.playlistlist)
             
 
             if i<=4 :
                 self.playlistlocate.buttonlist[i].setGeometry(20+(300*i),20,200,200)
                 self.playlistlocate.buttonlist[i].setStyleSheet('background:black;''background-image:url(folder.png);')
                 
-                self.myplaylistname.setGeometry(20+(300*i)+40,240,200,25)
-                self.myplaylistname.setText(self.playlistlocate.buttonlabellist[i])
-                self.myplaylistname.setStyleSheet('color:white;')
+                self.playlistlocate.mybuttonlabellist[i].setGeometry(20+(300*i)+40,240,200,25)
+                self.playlistlocate.mybuttonlabellist[i].setText(self.playlistlocate.buttonlabellist[i])
+                self.playlistlocate.mybuttonlabellist[i].setStyleSheet('color:white;')
                 
 
             if i>=4:
                 self.playlistlocate.buttonlist[i].setGeometry(20+(300*(i-4)),200*2-100,200,200)
                 self.playlistlocate.buttonlist[i].setStyleSheet('background:black;''background-image:url(folder.png);')
                     
-                self.myplaylistname.setGeometry(20+(300*(i-4))+40,250*2,200,25)
-                self.myplaylistname.setText(self.playlistlocate.buttonlabellist[i])
-                self.myplaylistname.setStyleSheet('color:white;')
+                self.playlistlocate.mybuttonlabellist[i].setGeometry(20+(300*(i-4))+40,250*2,200,25)
+                self.playlistlocate.mybuttonlabellist[i].setText(self.playlistlocate.buttonlabellist[i])
+                self.playlistlocate.mybuttonlabellist[i].setStyleSheet('color:white;')
 
             
             

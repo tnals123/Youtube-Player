@@ -508,24 +508,19 @@ class Mainlogic:
             self.mainlogic.playlist.editbutton.hide()
 
     def ApplyButton(self):
+        self.mainlogic.playlist.addpushbutton.setDisabled(False)
+        self.mainlogic.playlist.applybutton.hide()
+        self.mainlogic.playlist.cancelbutton.hide()
+        self.mainlogic.playlist.editbutton.show()
         for i in range(0,len(self.mainlogic.playlist.playlistlocate.buttonlabellist)):
-            
             self.mainlogic.playlist.playlistlocate.buttonlabellist[i]=self.changelist[i].text()
-            
-            self.newplaylistname=QtWidgets.QLabel(self.mainlogic.playlist.playlistlist)
-            if i<4:
-                self.newplaylistname.setGeometry(20+(300*i)+40,240,200,25)
-                self.newplaylistname.setText(self.mainlogic.playlist.playlistlocate.buttonlabellist[i])
-                self.newplaylistname.setStyleSheet('color:white;')
-            if i>=4:
-                self.newplaylistname.setGeometry(20+(300*(i-4))+40,240,200,25)
-                self.newplaylistname.setText(self.mainlogic.playlist.playlistlocate.buttonlabellist[i])
-                self.newplaylistname.setStyleSheet('color:white;')
+            self.changelist[i].hide()
+            self.mainlogic.playlist.playlistlocate.mybuttonlabellist[i].setText(self.mainlogic.playlist.playlistlocate.buttonlabellist[i])
 
-
+        
 
     def CanCelEdit(self):
-        
+        self.mainlogic.playlist.addpushbutton.setDisabled(False)
         
         self.mainlogic.playlist.applybutton.hide()
         self.mainlogic.playlist.cancelbutton.hide()
