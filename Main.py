@@ -19,6 +19,7 @@ import json
 class Mainlogic:
     def __init__(self):
         self.count=0
+        
         self.mainlogic=ConnectUi.Connect()
         self.videoplayerui=VideoplayerUi.VideoPlayer()
         
@@ -400,6 +401,7 @@ class Mainlogic:
             
 
     def StartProgrem(self):
+        print(self.mainlogic.playlist.playlistlocate.buttonlabellist)
         self.videodata=videodatabase.VideoData()
         self.videodata.StoreButtons()
 
@@ -522,9 +524,10 @@ class Mainlogic:
             except sqlite3.OperationalError:
                 pass
             self.mainlogic.playlist.playlistlocate.buttonlabellist[i]=self.changelist[i].text()
-            
+            self.mainlogic.playlist.playlistlocate.deletebutton[i].hide()
             self.changelist[i].hide()
             self.mainlogic.playlist.playlistlocate.mybuttonlabellist[i].setText(self.mainlogic.playlist.playlistlocate.buttonlabellist[i])
+            self.StartProgrem()
 
         
 

@@ -91,6 +91,8 @@ class VideoPlayer(object):
         self.miniplayerbutton.setStyleSheet('border-style:dashed;''border-width:2px;''border-color:red;''background:black;''color:white;')
         self.miniplayerbutton.setText('미니 플레이어 사용하기')
 
+        self.positionslider = QtWidgets.QSlider(QtCore.Qt.Horizeontal,self.playerui)
+        self.positionslider.setMaximum(1000)
         
 
         
