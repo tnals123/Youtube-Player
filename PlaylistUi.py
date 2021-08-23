@@ -13,8 +13,6 @@ class Playlist:
         
     def setupUi(self):
 
-        
-
         self.playlistui=QtWidgets.QWidget()
         
         self.background=QtWidgets.QLabel(self.playlistui)
@@ -23,11 +21,6 @@ class Playlist:
 
         self.scrollarea=QtWidgets.QScrollArea(self.playlistui)
         self.scrollarea.setGeometry(50,300,1200,550)
-        
-        
-
-
-        
 
         self.playlistlist=QtWidgets.QWidget(self.playlistui)
         self.playlistlist.setStyleSheet('background:black;')
@@ -35,7 +28,6 @@ class Playlist:
         
         self.scrollarea.setWidget(self.playlistlist)
         
-
         self.editbutton=QtWidgets.QPushButton(self.playlistui)
         self.editbutton.setGeometry(1130,260,120,30)
         self.editbutton.setStyleSheet('background: #1C1C1C;''color:white;''border-style:dashed;''border-width:2px;''border-color:red;')
@@ -64,8 +56,6 @@ class Playlist:
         self.youtube.setGeometry(100,40,150,60)
         self.youtube.setStyleSheet('background-image:url(youtube.jpg);''border:1px solid #1c1c1c;')
         
-        
-
         self.addpushbutton=QtWidgets.QPushButton(self.playlistlist)
         if 100+(300*self.playlistlocate.result[0][0]<=700) :
             self.addpushbutton.setGeometry(20+(300*self.playlistlocate.result[0][0]),20,200,200)
@@ -75,11 +65,9 @@ class Playlist:
 
         self.playlistlocate.StoreButtons()
         for i in range(0,len(self.playlistlocate.buttonlist2)):
-
-           
+   
             self.playlistlocate.buttonlist[i]=QtWidgets.QPushButton(self.playlistlist)
-            self.playlistlocate.mybuttonlabellist[i]=QtWidgets.QLabel(self.playlistlist)
-            
+            self.playlistlocate.mybuttonlabellist[i]=QtWidgets.QLabel(self.playlistlist)            
 
             if i<=4 :
                 self.playlistlocate.buttonlist[i].setGeometry(20+(300*i),20,200,200)
@@ -88,7 +76,6 @@ class Playlist:
                 self.playlistlocate.mybuttonlabellist[i].setGeometry(20+(300*i)+40,240,200,25)
                 self.playlistlocate.mybuttonlabellist[i].setText(self.playlistlocate.buttonlabellist[i])
                 self.playlistlocate.mybuttonlabellist[i].setStyleSheet('color:white;')
-                
 
             if i>=4:
                 self.playlistlocate.buttonlist[i].setGeometry(20+(300*(i-4)),200*2-100,200,200)
@@ -98,8 +85,6 @@ class Playlist:
                 self.playlistlocate.mybuttonlabellist[i].setText(self.playlistlocate.buttonlabellist[i])
                 self.playlistlocate.mybuttonlabellist[i].setStyleSheet('color:white;')
 
-            
-            
         for i in range(0,len(self.playlistlocate.buttonlist2)):
              self.playlistlocate.deletebutton[i]=QtWidgets.QPushButton(self.playlistlist)
              if i<=4 :
