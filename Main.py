@@ -23,10 +23,13 @@ class Mainlogic:
         self.mainlogic=ConnectUi.Connect()
         self.videoplayerui=VideoplayerUi.VideoPlayer()
         
+        
         self.mainlogic.show()
         
         self.instance = vlc.Instance()
         self.mediaplayer = self.instance.media_player_new()
+        self.loading=Loading(self.mediaplayer,self.doAction)
+     
         
         
 
@@ -57,6 +60,10 @@ class Mainlogic:
         self.videoplayerui.orderbutton.clicked.connect(self.OrderedPlay)
         self.videoplayerui.randombutton.clicked.connect(self.ShufflePlay)
         self.mainlogic.playlist.applybutton.clicked.connect(self.ApplyButton)
+        self.videoplayerui.positionslider.sliderMoved.connect(self.setPosition)
+        self.videoplayerui.timer.timeout.connect(self.updateUI)
+        self.videoplayerui.editbutton.clicked.connect(self.ShowDeleteButton)
+        
         
         #미니플레이어 함수
         self.mainlogic.miniplayerui.pausebutton.clicked.connect(self.PlayPause)
@@ -76,7 +83,29 @@ class Mainlogic:
 
     def OpenYouTube(self):
         
-        webbrowser.open("https://www.youtube.com/")        
+        webbrowser.open("https://www.youtube.com/")     
+
+   
+
+    def Timeevent(self):
+        if self.step >= 100:
+            self.mytime.stop()
+        self.step+=1
+        self.videoplayerui.processbar.setValue(self.step)   
+
+    def doAction(self):
+        self.mytime=QtCore.QBasicTimer()
+        self.step=0
+        if self.step >= 100:
+            self.mytime.stop()
+        self.step+=1
+        self.videoplayerui.processbar.setValue(self.step)   
+        if self.mytime.isActive():
+            self.mytime.stop()
+        
+        else:
+            self.mytime.start(100, self.videoplayerui.playerui)
+           
     ###### 재생목록에 영상 추가 함수
 
     def PlayListButtonChect(self,event,button):
@@ -105,6 +134,14 @@ class Mainlogic:
            
 
     ###### 영상 재생 함수
+
+    def updateUI(self):
+        self.videoplayerui.positionslider.setValue(self.mediaplayer.get_position() * 1000)
+        if not self.mediaplayer.is_playing():
+            self.videoplayerui.timer.stop()
+
+    def setPosition(self,position):
+        self.mediaplayer.set_position(position / 1000.0)
 
     def RepeatPlay(self):
         self.videothread=VideoThread_Repeat(self.mediaplayer)
@@ -170,6 +207,7 @@ class Mainlogic:
              self.mainlogic.miniplayerui.pausebutton.show()
              self.mainlogic.miniplayerui.playbutton.hide()
              self.mediaplayer.play()
+             self.videoplayerui.timer.start()
              self.isPaused = False
 
     def VideoStop(self):
@@ -200,12 +238,45 @@ class Mainlogic:
             self.titlelist.append(title2)
       
         self.mainlogic.miniplayerui.videotitle.setText(self.titlelist[self.count])
-        
 
+
+
+    def DeleteVideo(self,event,video,label,video2,button):
+        
+        self.video=video
+        self.label=label
+        self.videodata.DeleteVideo(self.myplaylist,self.video)
+        video2.deleteLater()
+        self.label.deleteLater()
+        button.deleteLater()
+        
+    def Cancel(self):
+        self.videoplayerui.editbutton.show()
+        self.videoplayerui.cancelbutton.hide()
+        for i in range(0,len(self.videodata.myurl)):
+            self.videodata.deletebutton2[i].hide()
+
+    def ShowDeleteButton(self):
+        self.videoplayerui.editbutton.hide()
+        self.videoplayerui.cancelbutton.show()
+        self.videoplayerui.cancelbutton.clicked.connect(self.Cancel)
+        for i in range(0,len(self.videodata.myurl)):
+              
+                self.videodata.deletebutton2[i]=QtWidgets.QPushButton(self.videoplayerui.videolistlabelarea)
+                self.videodata.deletebutton2[i].setGeometry(265,25+(200*i),30,30)
+                self.videodata.deletebutton2[i].setStyleSheet('border-radius:15px;''background:red;')
+                self.videodata.deletebutton2[i].setText('X')
+                self.videodata.deletebutton2[i].setFont(QtGui.QFont(None,15))
+                self.videodata.deletebutton2[i].show()
+                self.videodata.deletebutton2[i].mousePressEvent=lambda event,video=self.videodata.myurl[i][0],label=self.videodata.urltitle[i],video2=self.videodata.urlbuttonlist[i],button=self.videodata.deletebutton2[i]:self.DeleteVideo(event,video,label,video2,button)
+                
 
     def PlayVideo(self,event,myplaylist):
+        
         self.videoplayerui.mainwindow.setWindowTitle("Video Player")
         self.myplaylist=myplaylist
+        
+        
         try:
             self.videothread_ordered.videocount=0
             self.videothread_shuffled.videocount=0
@@ -235,6 +306,7 @@ class Mainlogic:
                 image.loadFromData(requests.get(self.thumbnailimg).content)
                 image.scaled(225,140)
                 
+                
                 self.videodata.urlbuttonlist[i]=QtWidgets.QLabel(self.videoplayerui.videolistlabelarea)
                 self.videodata.urlbuttonlist[i].setGeometry(0,40+(200*i),280,140)
                 self.videodata.urlbuttonlist[i].setStyleSheet('background:white;')
@@ -249,6 +321,9 @@ class Mainlogic:
                 self.videodata.urltitle[i].setText(self.videotitle)
                 self.videodata.urltitle[i].show()
                 self.videodata.urltitle[i].mousePressEvent=lambda event,video=self.videotitle,playlist=self.myplaylist:self.SelectVideo(event,video,playlist)
+
+                
+
             if len(self.videodata.myurl)<=3:
                 self.videoplayerui.videolistlabelarea.setGeometry(1100,50,310,700)
             else:
@@ -729,6 +804,25 @@ class VideoThread_Shuffled(threading.Thread):
                 break
 
 
+class Loading(threading.Thread):
+    def __init__(self,mediaplayer,gkatn):
+        threading.Thread.__init__(self)
+        self.mediaplayer=mediaplayer
+        self.gkatn=gkatn
+   
+        
+    def run(self):
+        while True:
+            current_state = str(self.mediaplayer.get_state())
+            print(current_state)
+            time.sleep(1)
+            self.gkatn()
+
+    
+
+           
+            
+        
 
 
     

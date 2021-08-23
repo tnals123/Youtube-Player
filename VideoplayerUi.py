@@ -23,6 +23,7 @@ class VideoPlayer(object):
 
         self.backbutton=QtWidgets.QPushButton(self.playerui)
         self.backbutton.setGeometry(50,760,30,30)
+        self.backbutton.setShortcut('Left')
         self.backbutton.setStyleSheet('background-image:url(previous.jpg);''border:1px solid black;')
 
 
@@ -37,14 +38,17 @@ class VideoPlayer(object):
         self.pausebutton=QtWidgets.QPushButton(self.playerui)
         self.pausebutton.setGeometry(100,760,30,30)
         self.pausebutton.setStyleSheet('background-image:url(pause.jpg);''border:1px solid black;')
+        self.pausebutton.setShortcut('space')
 
         self.playbutton=QtWidgets.QPushButton(self.playerui)
         self.playbutton.setGeometry(100,760,30,30)
         self.playbutton.setStyleSheet('background-image:url(play.jpg);''border:1px solid black;')
+        self.playbutton.setShortcut('space')
         self.playbutton.hide()
 
         self.nextbutton=QtWidgets.QPushButton(self.playerui)
         self.nextbutton.setGeometry(200,760,30,30)
+        self.nextbutton.setShortcut('Right')
         self.nextbutton.setStyleSheet('background-image:url(next.jpg);''border:1px solid black;')
 
         self.stopbutton=QtWidgets.QPushButton(self.playerui)
@@ -52,7 +56,8 @@ class VideoPlayer(object):
         self.stopbutton.setStyleSheet('background-image:url(stop.jpg);''border:1px solid black;')
 
         self.videolistlabel=QtWidgets.QScrollArea(self.playerui)
-        self.videolistlabel.setGeometry(1100,50,310,600)
+        self.videolistlabel.setGeometry(1100,50,320,600)
+        self.videolistlabel.horizontalScrollBar().setStyleSheet('height:0px;')
         
         self.videolistlabelarea=QtWidgets.QWidget(self.playerui)
         self.videolistlabelarea.setStyleSheet('background:black;')
@@ -68,8 +73,17 @@ class VideoPlayer(object):
         self.buttonlistlabel.setGeometry(1100,680,310,200)
         self.buttonlistlabel.setStyleSheet('background:#1C1C1C;')
 
+        self.editbutton=QtWidgets.QPushButton(self.playerui)
+        self.editbutton.setGeometry(1180,700,150,25)
+        self.editbutton.setText('편집하기')
+
+        self.cancelbutton=QtWidgets.QPushButton(self.playerui)
+        self.cancelbutton.setGeometry(1180,700,150,25)
+        self.cancelbutton.setText('취소하기')
+        self.cancelbutton.hide()
+
         self.onesongbutton=QtWidgets.QPushButton(self.playerui)
-        self.onesongbutton.setGeometry(1180,730,150,25)
+        self.onesongbutton.setGeometry(1180,740,150,25)
         self.onesongbutton.setText('한곡 재생')
 
         self.orderbutton=QtWidgets.QPushButton(self.playerui)
@@ -77,7 +91,7 @@ class VideoPlayer(object):
         self.orderbutton.setText('순차 재생')
 
         self.randombutton=QtWidgets.QPushButton(self.playerui)
-        self.randombutton.setGeometry(1180,830,150,25)
+        self.randombutton.setGeometry(1180,820,150,25)
         self.randombutton.setText('셔플 재생')
         
         
@@ -91,9 +105,17 @@ class VideoPlayer(object):
         self.miniplayerbutton.setStyleSheet('border-style:dashed;''border-width:2px;''border-color:red;''background:black;''color:white;')
         self.miniplayerbutton.setText('미니 플레이어 사용하기')
 
-        self.positionslider = QtWidgets.QSlider(QtCore.Qt.Horizeontal,self.playerui)
+        self.positionslider = QtWidgets.QSlider(QtCore.Qt.Horizontal,self.playerui)
         self.positionslider.setMaximum(1000)
+        self.positionslider.setGeometry(50,700,1000,30)
+
+        self.timer = QtCore.QTimer(self.playerui)
+        self.timer.setInterval(200)
         
+        
+       
+
+
 
         
         

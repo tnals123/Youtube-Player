@@ -76,6 +76,12 @@ class VideoData:
         #self.cur.execute("ALTER TABLE '"+self.name+"' RENAME TO '"+self.changename+"'")
         self.conn.commit()
 
+    def DeleteVideo(self,playlist,video):
+        self.playlist=playlist
+        self.video=video
+        
+        self.cur.execute("DELETE from '"+self.playlist+"' where name = '"+self.video+"'")
+        self.conn.commit()
     def ChangeTable(self,name,changename):
         self.name=name
         self.changename=changename
@@ -96,6 +102,7 @@ class VideoData:
         self.mybuttonlabellist=[]
         self.deletebutton=[]
         self.strbutton=[]
+        self.deletebutton2=[]
         self.cur.execute("SELECT * from buttonname")
         self.buttonlist2=self.cur.fetchall()
         try:
@@ -106,7 +113,7 @@ class VideoData:
                 self.deletebutton.append(self.buttonlist2[i][0])
                 self.strbutton.append(self.buttonlist2[i][0])
                 self.mybuttonlabellist.append(self.buttonlist2[i][0])
-                
+                self.deletebutton2.append(self.buttonlist2[i][0])
         except IndexError:
             pass
         
