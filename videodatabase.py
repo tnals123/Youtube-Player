@@ -14,6 +14,7 @@ class VideoData:
         # self.cur.execute('DROP TABLE 재생목록4')
         # self.cur.execute('DROP TABLE 재생목록5')
         # self.cur.execute('DROP TABLE 재생목록6')
+        # self.cur.execute('DROP TABLE 재생목록7')
         
         # self.cur.execute("UPDATE count SET count=0")
         # self.cur.execute("DELETE FROM buttonname")

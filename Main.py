@@ -649,9 +649,9 @@ class Mainlogic:
         self.videodata.UpdateCount()
         self.videodata.FindCount()
         if 100+(300*self.videodata.result[0][0]<=700) :
-            self.name2.setGeometry(100+(300*self.videodata.result[0][0]),350,200,200)
+            self.name2.setGeometry(20+(300*self.videodata.result[0][0]),20,200,200)
             if 100+(300*self.videodata.result[0][0])>1000:
-                self.name2.setGeometry(100+(300*(self.videodata.result[0][0]-4)),350*2-100,200,200)
+                self.name2.setGeometry(20+(300*(self.videodata.result[0][0]-4)),300,200,200)
         self.mainlogic.check.mainwindow.hide()
 
     
@@ -662,16 +662,16 @@ class Mainlogic:
         self.videodata.FindCount()
         self.videodata.StoreButtons()
         
-        self.videodata.buttonlist[self.videodata.result[0][0]]=QtWidgets.QPushButton(self.mainlogic.playlist.playlistui)
+        self.videodata.buttonlist[self.videodata.result[0][0]]=QtWidgets.QPushButton(self.mainlogic.playlist.playlistlist)
        
-        self.videodata.buttonlabellist[self.videodata.result[0][0]]=QtWidgets.QLabel(self.mainlogic.playlist.playlistui)
+        self.videodata.buttonlabellist[self.videodata.result[0][0]]=QtWidgets.QLabel(self.mainlogic.playlist.playlistlist)
         
 
         if 100+(300*self.videodata.result[0][0]<=700) :
-            self.videodata.buttonlist[self.videodata.result[0][0]].setGeometry(100+(300*self.videodata.result[0][0]),350,200,200)
+            self.videodata.buttonlist[self.videodata.result[0][0]].setGeometry(20+(300*self.videodata.result[0][0]),20,200,200)
             self.videodata.buttonlist[self.videodata.result[0][0]].setStyleSheet('background:black;''background-image:url(folder.png)')
     
-            self.videodata.buttonlabellist[self.videodata.result[0][0]].setGeometry(100+(300*self.videodata.result[0][0])+40,450,200,200)
+            self.videodata.buttonlabellist[self.videodata.result[0][0]].setGeometry(20+(300*self.videodata.result[0][0])+40,240,200,25)
             self.videodata.buttonlabellist[self.videodata.result[0][0]].setText(self.mainlogic.check.lineedit.text())
             self.videodata.buttonlabellist[self.videodata.result[0][0]].setStyleSheet('color:white;')
 
@@ -681,11 +681,11 @@ class Mainlogic:
             self.videodata.buttonlabellist[self.videodata.result[0][0]].show()
 
             if 100+(300*self.videodata.result[0][0])>1000:
-                self.videodata.buttonlist[self.videodata.result[0][0]].setGeometry(100+(300*(self.videodata.result[0][0]-4)),350*2-100,200,200)
+                self.videodata.buttonlist[self.videodata.result[0][0]].setGeometry(20+(300*(self.videodata.result[0][0]-4)),300,200,200)
                 self.videodata.buttonlist[self.videodata.result[0][0]].setStyleSheet('background:black;''background-image:url(folder.png)')
                 self.videodata.buttonlist[self.videodata.result[0][0]].show()
 
-                self.videodata.buttonlabellist[self.videodata.result[0][0]].setGeometry(100+(300*(self.videodata.result[0][0]-4))+40,350*2,200,200)
+                self.videodata.buttonlabellist[self.videodata.result[0][0]].setGeometry(20+(300*(self.videodata.result[0][0]-4))+40,500,200,200)
                 self.videodata.buttonlabellist[self.videodata.result[0][0]].setText(self.mainlogic.check.lineedit.text())
                 self.videodata.buttonlabellist[self.videodata.result[0][0]].setStyleSheet('color:white;')
 
