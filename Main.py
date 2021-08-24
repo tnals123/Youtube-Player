@@ -498,6 +498,13 @@ class Mainlogic:
         self.mainlogic.paper.setCurrentIndex(1)
 
     def BackToVideoList(self):
+        print(self.videodata.myurl)
+        try:
+            for i in range(0,len(self.videodata.myurl)):
+                self.videodata.urlbuttonlist[i].deleteLater()
+                self.videodata.urltitle[i].deleteLater()
+        except IndexError:
+            pass
         self.mainlogic.mainwindow.setWindowTitle("Playlist")
         self.mainlogic.mainwindow.move(250,50)
         self.mainlogic.mainwindow.resize(self.mainlogic.playlist.playlistui_x,self.mainlogic.playlist.playlistui_y)
@@ -521,7 +528,7 @@ class Mainlogic:
         self.mainlogic.mainwindow.hide()
 
     def BackToPlaylist(self):
-        self.videoplayerui.videolistlabelarea.clear()
+        
         self.videoplayerui.videolistlabelarea.show()
         self.mainlogic.mainwindow.setWindowTitle("Playlist")
         self.mainlogic.mainwindow.move(250,50)
