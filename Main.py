@@ -521,6 +521,8 @@ class Mainlogic:
         self.mainlogic.mainwindow.hide()
 
     def BackToPlaylist(self):
+        self.videoplayerui.videolistlabelarea.clear()
+        self.videoplayerui.videolistlabelarea.show()
         self.mainlogic.mainwindow.setWindowTitle("Playlist")
         self.mainlogic.mainwindow.move(250,50)
         self.mainlogic.mainwindow.resize(self.mainlogic.playlist.playlistui_x,self.mainlogic.playlist.playlistui_y)
