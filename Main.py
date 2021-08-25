@@ -685,7 +685,7 @@ class Mainlogic:
                 self.videodata.buttonlist[self.videodata.result[0][0]].setStyleSheet('background:black;''background-image:url(folder.png)')
                 self.videodata.buttonlist[self.videodata.result[0][0]].show()
 
-                self.videodata.buttonlabellist[self.videodata.result[0][0]].setGeometry(20+(300*(self.videodata.result[0][0]-4))+40,500,200,200)
+                self.videodata.buttonlabellist[self.videodata.result[0][0]].setGeometry(20+(300*(self.videodata.result[0][0]-4))+40,500,200,25)
                 self.videodata.buttonlabellist[self.videodata.result[0][0]].setText(self.mainlogic.check.lineedit.text())
                 self.videodata.buttonlabellist[self.videodata.result[0][0]].setStyleSheet('color:white;')
 
