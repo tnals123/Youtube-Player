@@ -583,7 +583,7 @@ class Mainlogic:
                 self.changelist[i].setStyleSheet('color:black;''background:white;')
                 self.changelist[i].show()  
             if i>=4:
-                self.changelist[i].setGeometry(20+(300*(i-4)),200*2-100,150,200)
+                self.changelist[i].setGeometry(20+(300*(i-4)+40),500,150,25)
                 self.changelist[i].setText(self.mainlogic.playlist.playlistlocate.buttonlabellist[i])
                 self.changelist[i].setStyleSheet('color:black;''background:white;')
                 self.changelist[i].show() 

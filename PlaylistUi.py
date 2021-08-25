@@ -66,8 +66,15 @@ class Playlist:
         self.addpushbutton.setStyleSheet('background: black;''border:1px solid black;''background-image:url(plus.png);')
 
         self.playlistlocate.StoreButtons()
+        if len(self.playlistlocate.buttonlist2)<=7:
+            self.playlistlist.setGeometry(50,300,1170,670)
+
+        elif len(self.playlistlocate.buttonlist2)>=8:
+            self.playlistlist.setGeometry(50,300,1170,len(self.playlistlocate.buttonlist2)*100)
+            
+
         for i in range(0,len(self.playlistlocate.buttonlist2)):
-            print(len(self.playlistlocate.buttonlist2))
+            
             self.playlistlocate.buttonlist[i]=QtWidgets.QPushButton(self.playlistlist)
             self.playlistlocate.mybuttonlabellist[i]=QtWidgets.QLabel(self.playlistlist)            
 
@@ -78,10 +85,10 @@ class Playlist:
                 self.playlistlocate.mybuttonlabellist[i].setGeometry(20+(300*i)+40,240,200,25)
                 self.playlistlocate.mybuttonlabellist[i].setText(self.playlistlocate.buttonlabellist[i])
                 self.playlistlocate.mybuttonlabellist[i].setStyleSheet('color:white;')
-                self.playlistlist.setGeometry(50,300,1170,670)
+               
 
             if i>=4 and i<8:
-                print('asdf')
+                
                 self.playlistlocate.buttonlist[i].setGeometry(20+(300*(i-4)),200*2-100,200,200)
                 self.playlistlocate.buttonlist[i].setStyleSheet('background:black;''background-image:url(folder.png);')
                     
@@ -89,16 +96,16 @@ class Playlist:
                 self.playlistlocate.mybuttonlabellist[i].setText(self.playlistlocate.buttonlabellist[i])
                 self.playlistlocate.mybuttonlabellist[i].setStyleSheet('color:white;')
 
-                if i>=8:
+            if i>=8:
+                
+                self.playlistlocate.buttonlist[i].setGeometry(20+(300*(i-8)),580,200,200)
+                self.playlistlocate.buttonlist[i].setStyleSheet('background:black;''background-image:url(folder.png);')
                     
-                    self.playlistlocate.buttonlist[i].setGeometry(20+(300*(i-8)),580,200,200)
-                    self.playlistlocate.buttonlist[i].setStyleSheet('background:black;''background-image:url(folder.png);')
-                        
-                    self.playlistlocate.mybuttonlabellist[i].setGeometry(20+(300*(i-8))+40,760,200,25)
-                    self.playlistlocate.mybuttonlabellist[i].setText(self.playlistlocate.buttonlabellist[i])
-                    self.playlistlocate.mybuttonlabellist[i].setStyleSheet('color:white;')
-                    
-                    self.playlistlist.setGeometry(50,300,1170,i*125)
+                self.playlistlocate.mybuttonlabellist[i].setGeometry(20+(300*(i-8))+40,760,200,25)
+                self.playlistlocate.mybuttonlabellist[i].setText(self.playlistlocate.buttonlabellist[i])
+                self.playlistlocate.mybuttonlabellist[i].setStyleSheet('color:white;')
+                
+                
             
                 
                 
