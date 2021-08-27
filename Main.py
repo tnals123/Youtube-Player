@@ -257,6 +257,7 @@ class Mainlogic:
             self.videodata.deletebutton2[i].hide()
 
     def ShowDeleteButton(self):
+        
         self.videoplayerui.editbutton.hide()
         self.videoplayerui.cancelbutton.show()
         self.videoplayerui.cancelbutton.clicked.connect(self.Cancel)
@@ -476,7 +477,7 @@ class Mainlogic:
             
 
     def StartProgrem(self):
-        print(self.mainlogic.playlist.playlistlocate.buttonlabellist)
+     
         self.videodata=videodatabase.VideoData()
         self.videodata.StoreButtons()
 
@@ -498,7 +499,7 @@ class Mainlogic:
         self.mainlogic.paper.setCurrentIndex(1)
 
     def BackToVideoList(self):
-        print(self.videodata.myurl)
+        
         try:
             for i in range(0,len(self.videodata.myurl)):
                 self.videodata.urlbuttonlist[i].deleteLater()
@@ -564,6 +565,7 @@ class Mainlogic:
 
 
     def VideoListEditButton(self):
+        
         self.changelist=[]
         self.videodata=videodatabase.VideoData()
         self.videodata.StoreButtons()
@@ -600,7 +602,7 @@ class Mainlogic:
         self.mainlogic.playlist.applybutton.hide()
         self.mainlogic.playlist.cancelbutton.hide()
         self.mainlogic.playlist.editbutton.show()
-        print(self.mainlogic.playlist.playlistlocate.buttonlabellist)
+        
         for i in range(0,len(self.mainlogic.playlist.playlistlocate.buttonlabellist)):
             try:
                 self.videodata.ChangeTable(self.mainlogic.playlist.playlistlocate.buttonlabellist[i],self.changelist[i].text())
@@ -645,13 +647,17 @@ class Mainlogic:
         self.videodata.CreatePlaylist(self.mainlogic.check.lineedit.text())
         self.videodata.StoreButtons()
         self.MakePlaylist()
+        print(self.videodata.buttonlist)
         
         self.videodata.UpdateCount()
         self.videodata.FindCount()
         if 100+(300*self.videodata.result[0][0]<=700) :
             self.name2.setGeometry(20+(300*self.videodata.result[0][0]),20,200,200)
-            if 100+(300*self.videodata.result[0][0])>1000:
-                self.name2.setGeometry(20+(300*(self.videodata.result[0][0]-4)),300,200,200)
+        if 100+(300*self.videodata.result[0][0])>1000 and 100+(300*self.videodata.result[0][0])<2500:
+            self.name2.setGeometry(20+(300*(self.videodata.result[0][0]-4)),300,200,200)
+        if (300*self.videodata.result[0][0])>=2500:
+             self.name2.setGeometry(20+(300*(self.videodata.result[0][0]-8)),580,200,200)
+        self.name2.show()
         self.mainlogic.check.mainwindow.hide()
 
     
@@ -680,19 +686,31 @@ class Mainlogic:
             self.videodata.buttonlist[self.videodata.result[0][0]].show()
             self.videodata.buttonlabellist[self.videodata.result[0][0]].show()
 
-            if 100+(300*self.videodata.result[0][0])>1000:
-                self.videodata.buttonlist[self.videodata.result[0][0]].setGeometry(20+(300*(self.videodata.result[0][0]-4)),300,200,200)
-                self.videodata.buttonlist[self.videodata.result[0][0]].setStyleSheet('background:black;''background-image:url(folder.png)')
-                self.videodata.buttonlist[self.videodata.result[0][0]].show()
+        if 100+(300*self.videodata.result[0][0])>=1000 and  100+(300*self.videodata.result[0][0])< 2500:
+            self.videodata.buttonlist[self.videodata.result[0][0]].setGeometry(20+(300*(self.videodata.result[0][0]-4)),300,200,200)
+            self.videodata.buttonlist[self.videodata.result[0][0]].setStyleSheet('background:black;''background-image:url(folder.png)')
+            self.videodata.buttonlist[self.videodata.result[0][0]].show()
 
-                self.videodata.buttonlabellist[self.videodata.result[0][0]].setGeometry(20+(300*(self.videodata.result[0][0]-4))+40,500,200,25)
-                self.videodata.buttonlabellist[self.videodata.result[0][0]].setText(self.mainlogic.check.lineedit.text())
-                self.videodata.buttonlabellist[self.videodata.result[0][0]].setStyleSheet('color:white;')
+            self.videodata.buttonlabellist[self.videodata.result[0][0]].setGeometry(20+(300*(self.videodata.result[0][0]-4))+40,500,200,25)
+            self.videodata.buttonlabellist[self.videodata.result[0][0]].setText(self.mainlogic.check.lineedit.text())
+            self.videodata.buttonlabellist[self.videodata.result[0][0]].setStyleSheet('color:white;')
+            self.videodata.buttonlist[self.videodata.result[0][0]].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[self.videodata.result[0][0]]:self.PlayVideo(event,myplaylist)
 
-                self.videodata.buttonlist[self.videodata.result[0][0]].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[self.videodata.result[0][0]]:self.PlayVideo(event,myplaylist)
+            self.videodata.buttonlist[self.videodata.result[0][0]].show()
 
-                self.videodata.buttonlist[self.videodata.result[0][0]].show()
+        if 100+(300*self.videodata.result[0][0])>=2500:   
+            self.videodata.buttonlist[self.videodata.result[0][0]].setGeometry(20+(300*(self.videodata.result[0][0]-8)),580,200,200)
+            self.videodata.buttonlist[self.videodata.result[0][0]].setStyleSheet('background:black;''background-image:url(folder.png)')
+            self.videodata.buttonlist[self.videodata.result[0][0]].show()
 
+            self.videodata.buttonlabellist[self.videodata.result[0][0]].setGeometry(20+(300*(self.videodata.result[0][0]-4))+40,760,200,25)
+            self.videodata.buttonlabellist[self.videodata.result[0][0]].setText(self.mainlogic.check.lineedit.text())
+            self.videodata.buttonlabellist[self.videodata.result[0][0]].setStyleSheet('color:white;')
+
+            self.videodata.buttonlist[self.videodata.result[0][0]].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[self.videodata.result[0][0]]:self.PlayVideo(event,myplaylist)
+
+            self.videodata.buttonlist[self.videodata.result[0][0]].show()     
+            self.videodata.buttonlabellist[self.videodata.result[0][0]].show()         
 
 class VideoThread_Repeat(threading.Thread):
     def __init__(self,video):
@@ -823,7 +841,7 @@ class Loading(threading.Thread):
     def run(self):
         while True:
             current_state = str(self.mediaplayer.get_state())
-            print(current_state)
+           
             time.sleep(1)
             self.gkatn()
 
