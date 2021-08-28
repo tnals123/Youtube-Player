@@ -28,7 +28,7 @@ class Mainlogic:
         
         self.instance = vlc.Instance()
         self.mediaplayer = self.instance.media_player_new()
-        self.loading=Loading(self.mediaplayer,self.doAction)
+        
      
         
         
@@ -536,7 +536,8 @@ class Mainlogic:
         self.mainlogic.mainwindow.resize(self.mainlogic.playlist.playlistui_x,self.mainlogic.playlist.playlistui_y)
         self.mainlogic.paper.setCurrentIndex(0)
     
-
+    def Uihide(self):
+        self.mainlogic.check.mainwindow.hide()
 
     #애니메이션 처리
     def EnterAnimation(self,event):
@@ -552,6 +553,15 @@ class Mainlogic:
     def FolderLeaveAnimation(self,event,i):
   
         self.mainlogic.playlist.playlistlocate.buttonlist[i].setStyleSheet('background-image:url(folder.png);''border:1px soild black;')
+
+    def FolderAnimation(self,event,button):
+        for i in range(0,len(self.videodata.buttonlist)):
+            button[i].setStyleSheet('background-image:url(folder2.png);''border:1px soild black;')
+        
+    def FolderLeaveAnimation(self,event,button):
+  
+        for i in range(0,len(self.videodata.buttonlist)):
+            button[i].setStyleSheet('background-image:url(folder2.png);''border:1px soild black;')
        
 
     def MyEvent(self,i):
@@ -636,10 +646,6 @@ class Mainlogic:
         self.videodata.FindCount()
         self.mainlogic.check.mainwindow.show()
         self.mainlogic.check.lineedit.setText('재생목록'+str(self.videodata.result[0][0]))
-
-
-    def Uihide(self):
-        self.mainlogic.check.mainwindow.hide()
 
     def AddPlaylist(self,event,name2):
         self.videodata=videodatabase.VideoData()
@@ -831,19 +837,7 @@ class VideoThread_Shuffled(threading.Thread):
                 break
 
 
-class Loading(threading.Thread):
-    def __init__(self,mediaplayer,gkatn):
-        threading.Thread.__init__(self)
-        self.mediaplayer=mediaplayer
-        self.gkatn=gkatn
-   
-        
-    def run(self):
-        while True:
-            current_state = str(self.mediaplayer.get_state())
-           
-            time.sleep(1)
-            self.gkatn()
+
 
     
 
