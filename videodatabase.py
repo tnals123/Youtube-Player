@@ -15,10 +15,13 @@ class VideoData:
         # self.cur.execute('DROP TABLE 재생목록5')
         # self.cur.execute('DROP TABLE 재생목록6')
         # self.cur.execute('DROP TABLE 재생목록7')
+        # self.cur.execute('DROP TABLE 재생목록9')
+        # self.cur.execute('DROP TABLE 재생목록10')
+        # self.cur.execute('DROP TABLE 브금')
         
         # self.cur.execute("UPDATE count SET count=0")
         # self.cur.execute("DELETE FROM buttonname")
-        # self.cur.execute("ALTER TABLE '게임영상' RENAME TO '123'")
+        # # self.cur.execute("ALTER TABLE '게임영상' RENAME TO '123'")
         # self.conn.commit()
     def __del__(self):
         self.conn.close()

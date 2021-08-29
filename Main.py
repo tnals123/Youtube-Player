@@ -554,14 +554,14 @@ class Mainlogic:
   
         self.mainlogic.playlist.playlistlocate.buttonlist[i].setStyleSheet('background-image:url(folder.png);''border:1px soild black;')
 
-    def FolderAnimation(self,event,button):
-        for i in range(0,len(self.videodata.buttonlist)):
-            button[i].setStyleSheet('background-image:url(folder2.png);''border:1px soild black;')
+    def FolderAnimation2(self,event,button):
         
-    def FolderLeaveAnimation(self,event,button):
-  
-        for i in range(0,len(self.videodata.buttonlist)):
-            button[i].setStyleSheet('background-image:url(folder2.png);''border:1px soild black;')
+        button.setStyleSheet('background-image:url(folder2.png);''border:1px soild black;')
+        
+    def FolderLeaveAnimation2(self,event,button):
+        print('asdf')
+        
+        button.setStyleSheet('background-image:url(folder.png);''border:1px soild black;')
        
 
     def MyEvent(self,i):
@@ -653,10 +653,12 @@ class Mainlogic:
         self.videodata.CreatePlaylist(self.mainlogic.check.lineedit.text())
         self.videodata.StoreButtons()
         self.MakePlaylist()
-        print(self.videodata.buttonlist)
+       
         
         self.videodata.UpdateCount()
         self.videodata.FindCount()
+        self.videodata.buttonlist[self.videodata.result[0][0]-1].enterEvent=lambda event,button=self.videodata.buttonlist[self.videodata.result[0][0]-1]:self.FolderAnimation2(event,button)
+        self.videodata.buttonlist[self.videodata.result[0][0]-1].leaveEvent=lambda event,button=self.videodata.buttonlist[self.videodata.result[0][0]-1]:self.FolderLeaveAnimation2(event,button)
         if 100+(300*self.videodata.result[0][0]<=700) :
             self.name2.setGeometry(20+(300*self.videodata.result[0][0]),20,200,200)
         if 100+(300*self.videodata.result[0][0])>1000 and 100+(300*self.videodata.result[0][0])<2500:
@@ -673,13 +675,14 @@ class Mainlogic:
         
         self.videodata.FindCount()
         self.videodata.StoreButtons()
-        
+        print(100+(300*self.videodata.result[0][0]))
         self.videodata.buttonlist[self.videodata.result[0][0]]=QtWidgets.QPushButton(self.mainlogic.playlist.playlistlist)
        
         self.videodata.buttonlabellist[self.videodata.result[0][0]]=QtWidgets.QLabel(self.mainlogic.playlist.playlistlist)
+
         
 
-        if 100+(300*self.videodata.result[0][0]<=700) :
+        if 100+(300*self.videodata.result[0][0]<=1000) :
             self.videodata.buttonlist[self.videodata.result[0][0]].setGeometry(20+(300*self.videodata.result[0][0]),20,200,200)
             self.videodata.buttonlist[self.videodata.result[0][0]].setStyleSheet('background:black;''background-image:url(folder.png)')
     
@@ -688,11 +691,11 @@ class Mainlogic:
             self.videodata.buttonlabellist[self.videodata.result[0][0]].setStyleSheet('color:white;')
 
             self.videodata.buttonlist[self.videodata.result[0][0]].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[self.videodata.result[0][0]]:self.PlayVideo(event,myplaylist)
-
+            
             self.videodata.buttonlist[self.videodata.result[0][0]].show()
             self.videodata.buttonlabellist[self.videodata.result[0][0]].show()
 
-        if 100+(300*self.videodata.result[0][0])>=1000 and  100+(300*self.videodata.result[0][0])< 2500:
+        if 100+(300*self.videodata.result[0][0])>1000 and  100+(300*self.videodata.result[0][0])< 2500:
             self.videodata.buttonlist[self.videodata.result[0][0]].setGeometry(20+(300*(self.videodata.result[0][0]-4)),300,200,200)
             self.videodata.buttonlist[self.videodata.result[0][0]].setStyleSheet('background:black;''background-image:url(folder.png)')
             self.videodata.buttonlist[self.videodata.result[0][0]].show()
@@ -701,7 +704,7 @@ class Mainlogic:
             self.videodata.buttonlabellist[self.videodata.result[0][0]].setText(self.mainlogic.check.lineedit.text())
             self.videodata.buttonlabellist[self.videodata.result[0][0]].setStyleSheet('color:white;')
             self.videodata.buttonlist[self.videodata.result[0][0]].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[self.videodata.result[0][0]]:self.PlayVideo(event,myplaylist)
-
+        
             self.videodata.buttonlist[self.videodata.result[0][0]].show()
 
         if 100+(300*self.videodata.result[0][0])>=2500:   
