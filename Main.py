@@ -559,7 +559,7 @@ class Mainlogic:
         button.setStyleSheet('background-image:url(folder2.png);''border:1px soild black;')
         
     def FolderLeaveAnimation2(self,event,button):
-        print('asdf')
+        
         
         button.setStyleSheet('background-image:url(folder.png);''border:1px soild black;')
        
