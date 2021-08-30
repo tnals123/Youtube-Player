@@ -114,7 +114,17 @@ class Mainlogic:
         self.button.setDisabled(True)
         
 
-
+    # self.thumb=self.videodata.urlbuttonlist[i]
+    #                 self.thumbnail=pafy.new(self.thumb)
+    #                 self.thumbnailimg=self.thumbnail.bigthumb
+    #                 self.videotitle=self.thumbnail.title
+    #             except KeyError:
+    #                 pass
+                
+    #             image=QtGui.QImage()
+    #             #여기!
+    #             image.loadFromData(requests.get(self.thumbnailimg).content)
+    #             image.scaled(225,140)
     def AddVideoToPlayList(self):
         self.buttonlist=[]
         for i in range(0,len(self.mainlogic.search.videodata.buttonlist)):
@@ -123,16 +133,33 @@ class Mainlogic:
          
         self.search=self.mainlogic.search.searchlineedit.text()
         
-        results = YoutubeSearch(self.search, max_results=1).to_json()
+        results = YoutubeSearch(self.search, max_results=3).to_json()
         results_dict = json.loads(results)
         for v in results_dict['videos']:
             videothumb=[]
             videotitle=[]
+            
             url='https://www.youtube.com' + v['url_suffix']
             videothumb.append(url)
             videotitle.append(url)
-            videothumb[v]=QtWidgets.QLabel(self.searchvideoui.paper)
-            videothumb[v].setGeometry(0,300*i,200,200)
+            print(videothumb)
+            
+        for i in range(0,len(videothumb)):
+
+            print(videothumb)
+            thumb=videothumb[i]
+            thumbnail=pafy.new(thumb)
+            thumbnailing=thumbnail.bigthumb
+
+            image=QtGui.QImage()
+            image.loadFromData(requests.get(thumbnailing).content)
+            image.scaled(225,140)
+
+            videothumb[i]=QtWidgets.QLabel(self.searchvideoui.paper)
+            videothumb[i].setGeometry(0,300*i,200,200)
+            videothumb[i].setPixmap(QtGui.QPixmap(image))
+
+            videothumb[i].show()     
             
             
         for i in range(0,len(self.buttonlist)):
