@@ -13,6 +13,7 @@ import ConnectUi
 import videodatabase
 import VideoplayerUi
 import requests
+import SearchVideoUi
 from youtube_search import YoutubeSearch
 import json
 ################################   데이터베이스에 리스트 하나 더 만들어서 매개변수에 넣을 리스트 하나 만들기
@@ -39,7 +40,7 @@ class Mainlogic:
             self.mediaplayer.set_hwnd(self.videoplayerui.videoframe.winId())
         elif sys.platform == "darwin":  # for MacOS
             self.mediaplayer.set_nsobject(self.videoplayerui.videoframe.winId())
-
+        self.searchvideoui=SearchVideoUi.SearchVideoUi()
         self.mainlogic.playlist.youtube.clicked.connect(self.OpenYouTube)
         self.mainlogic.playlist.addpushbutton.clicked.connect(self.CheckAddPlaylist)
         self.mainlogic.check.cancelbutton.clicked.connect(self.Uihide)
@@ -125,7 +126,14 @@ class Mainlogic:
         results = YoutubeSearch(self.search, max_results=1).to_json()
         results_dict = json.loads(results)
         for v in results_dict['videos']:
+            videothumb=[]
+            videotitle=[]
             url='https://www.youtube.com' + v['url_suffix']
+            videothumb.append(url)
+            videotitle.append(url)
+            videothumb[v]=QtWidgets.QLabel(self.searchvideoui.paper)
+            videothumb[v].setGeometry(0,300*i,200,200)
+            
             
         for i in range(0,len(self.buttonlist)):
            
@@ -303,7 +311,7 @@ class Mainlogic:
                     pass
                 
                 image=QtGui.QImage()
-              
+                #여기!
                 image.loadFromData(requests.get(self.thumbnailimg).content)
                 image.scaled(225,140)
                 
