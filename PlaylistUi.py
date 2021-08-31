@@ -116,20 +116,7 @@ class Playlist:
                    
 
 
-        for i in range(0,len(self.playlistlocate.buttonlist2)):
-             self.playlistlocate.deletebutton[i]=QtWidgets.QPushButton(self.playlistlist)
-             if i<=4 :
-                 self.playlistlocate.deletebutton[i].setGeometry(20+(300*i)+170,60,30,30)
-                 self.playlistlocate.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
-                 self.playlistlocate.deletebutton[i].setText('X')
-                 self.playlistlocate.deletebutton[i].setFont(QtGui.QFont(None,15))
-                 self.playlistlocate.deletebutton[i].hide()
-             if i>=4 :
-                 self.playlistlocate.deletebutton[i].setGeometry(20+(300*(i-4))+170,360,30,30)
-                 self.playlistlocate.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
-                 self.playlistlocate.deletebutton[i].setText('X')
-                 self.playlistlocate.deletebutton[i].setFont(QtGui.QFont(None,15))
-                 self.playlistlocate.deletebutton[i].hide()
+  
         
       
        

@@ -83,9 +83,9 @@ class VideoData:
     def DeleteVideo(self,playlist,video):
         self.playlist=playlist
         self.video=video
-        
         self.cur.execute("DELETE from '"+self.playlist+"' where name = '"+self.video+"'")
         self.conn.commit()
+
     def ChangeTable(self,name,changename):
         self.name=name
         self.changename=changename
@@ -96,9 +96,9 @@ class VideoData:
         self.name=name
         self.label=label
         self.cur.execute("DELETE TABLE '"+self.name+"' ")
-        self.name.destroy()
-        self.label.destroy()
+        self.cur.execute("UPDATE count set count=count-1")
         self.conn.commit()
+        
     
     def StoreButtons(self):
         self.buttonlist=[]

@@ -136,18 +136,25 @@ class Mainlogic:
         results = YoutubeSearch(self.search, max_results=3).to_json()
         results_dict = json.loads(results)
         for v in results_dict['videos']:
-            videothumb=[]
+            self.videothumb=[]
             videotitle=[]
             
             url='https://www.youtube.com' + v['url_suffix']
-            videothumb.append(url)
+            self.videothumb.append(url)
             videotitle.append(url)
-            print(videothumb)
+            print(self.videothumb)
+   
             
-        for i in range(0,len(videothumb)):
+            
+        for i in range(0,len(self.buttonlist)):
+           
+            self.videodata.AddVideoToPlayList(self.buttonlist[i],url)
+            
+    def asdf(self):
+        for i in range(0,len(self.videothumb)):
 
-            print(videothumb)
-            thumb=videothumb[i]
+            print(self.videothumb)
+            thumb=self.videothumb[i]
             thumbnail=pafy.new(thumb)
             thumbnailing=thumbnail.bigthumb
 
@@ -155,16 +162,11 @@ class Mainlogic:
             image.loadFromData(requests.get(thumbnailing).content)
             image.scaled(225,140)
 
-            videothumb[i]=QtWidgets.QLabel(self.searchvideoui.paper)
-            videothumb[i].setGeometry(0,300*i,200,200)
-            videothumb[i].setPixmap(QtGui.QPixmap(image))
+            self.videothumb[i]=QtWidgets.QLabel(self.searchvideoui.paper)
+            self.videothumb[i].setGeometry(0,300*i,200,200)
+            self.videothumb[i].setPixmap(QtGui.QPixmap(image))
 
-            videothumb[i].show()     
-            
-            
-        for i in range(0,len(self.buttonlist)):
-           
-            self.videodata.AddVideoToPlayList(self.buttonlist[i],url)
+            self.videothumb[i].show()  
            
            
 
@@ -614,13 +616,38 @@ class Mainlogic:
         self.changelist=[]
         self.videodata=videodatabase.VideoData()
         self.videodata.StoreButtons()
+        print(self.videodata.deletebutton)
+        print(self.mainlogic.playlist.playlistlocate.buttonlabellist)
         self.mainlogic.playlist.applybutton.show()
         self.mainlogic.playlist.cancelbutton.show()
         self.mainlogic.playlist.addpushbutton.setDisabled(True)
-        
+
+        for i in range(0,len(self.videodata.deletebutton)):
+            
+            self.videodata.deletebutton[i]=QtWidgets.QPushButton(self.mainlogic.playlist.playlistlist)
+            if i<=4 :
+                self.videodata.deletebutton[i].setGeometry(20+(300*i)+170,60,30,30)
+                self.videodata.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
+                self.videodata.deletebutton[i].setText('X')
+                self.videodata.deletebutton[i].setFont(QtGui.QFont(None,15))
+                self.videodata.deletebutton[i].hide()
+            if i>=4 and i<8:
+                self.videodata.deletebutton[i].setGeometry(20+(300*(i-4))+170,360,30,30)
+                self.videodata.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
+                self.videodata.deletebutton[i].setText('X')
+                self.videodata.deletebutton[i].setFont(QtGui.QFont(None,15))
+                self.videodata.deletebutton[i].hide()
+            if i>=8:
+                self.videodata.deletebutton[i].setGeometry(20+(300*(i-8))+170,690,30,30)
+                self.videodata.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
+                self.videodata.deletebutton[i].setText('X')
+                self.videodata.deletebutton[i].setFont(QtGui.QFont(None,15))
+                self.videodata.deletebutton[i].hide()
+            self.videodata.deletebutton[i].show()
+            print( self.videodata.deletebutton)
        
        
-        for i in range(0,len(self.mainlogic.playlist.playlistlocate.deletebutton)):
+        for i in range(0,len(self.videodata.deletebutton)):
             
             self.changebuttonname=QtWidgets.QLineEdit(self.mainlogic.playlist.playlistlist)
             self.changelist.append(self.changebuttonname)
@@ -638,7 +665,7 @@ class Mainlogic:
 
 
 
-            self.mainlogic.playlist.playlistlocate.deletebutton[i].show()
+          
             self.mainlogic.playlist.editbutton.hide()
 
     def ApplyButton(self):
@@ -648,14 +675,14 @@ class Mainlogic:
         self.mainlogic.playlist.cancelbutton.hide()
         self.mainlogic.playlist.editbutton.show()
         
-        for i in range(0,len(self.mainlogic.playlist.playlistlocate.buttonlabellist)):
+        for i in range(0,len(self.videodata.deletebutton)):
             try:
                 self.videodata.ChangeTable(self.mainlogic.playlist.playlistlocate.buttonlabellist[i],self.changelist[i].text())
                 self.videodata.ChangePlaylist(self.mainlogic.playlist.playlistlocate.buttonlabellist[i],self.changelist[i].text())
             except sqlite3.OperationalError:
                 pass
             self.mainlogic.playlist.playlistlocate.buttonlabellist[i]=self.changelist[i].text()
-            self.mainlogic.playlist.playlistlocate.deletebutton[i].hide()
+            self.videodata.deletebutton[i].hide()
             self.changelist[i].hide()
             self.mainlogic.playlist.playlistlocate.mybuttonlabellist[i].setText(self.mainlogic.playlist.playlistlocate.buttonlabellist[i])
             self.StartProgrem()
@@ -669,8 +696,8 @@ class Mainlogic:
         self.mainlogic.playlist.cancelbutton.hide()
         self.mainlogic.playlist.editbutton.show()
     
-        for i in range(0,len(self.mainlogic.playlist.playlistlocate.deletebutton)):
-            self.mainlogic.playlist.playlistlocate.deletebutton[i].hide()
+        for i in range(0,len(self.videodata.deletebutton)):
+            self.videodata.deletebutton[i].hide()
             self.changelist[i].hide()
         
 
@@ -698,7 +725,7 @@ class Mainlogic:
             self.name2.setGeometry(20+(300*self.videodata.result[0][0]),20,200,200)
         if 100+(300*self.videodata.result[0][0])>1000 and 100+(300*self.videodata.result[0][0])<2500:
             self.name2.setGeometry(20+(300*(self.videodata.result[0][0]-4)),300,200,200)
-        if (300*self.videodata.result[0][0])>=2500:
+        if (300*self.videodata.result[0][0])>=2400:
              self.name2.setGeometry(20+(300*(self.videodata.result[0][0]-8)),580,200,200)
         self.name2.show()
         self.mainlogic.check.mainwindow.hide()
@@ -710,7 +737,7 @@ class Mainlogic:
         
         self.videodata.FindCount()
         self.videodata.StoreButtons()
-        print(100+(300*self.videodata.result[0][0]))
+       
         self.videodata.buttonlist[self.videodata.result[0][0]]=QtWidgets.QPushButton(self.mainlogic.playlist.playlistlist)
        
         self.videodata.buttonlabellist[self.videodata.result[0][0]]=QtWidgets.QLabel(self.mainlogic.playlist.playlistlist)
