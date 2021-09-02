@@ -57,14 +57,14 @@ class Playlist:
         self.youtube.setStyleSheet('background-image:url(youtube.jpg);''border:1px solid #1c1c1c;')
         
         self.addpushbutton=QtWidgets.QPushButton(self.playlistlist)
+        
         if 100+(300*self.playlistlocate.result[0][0]<=700) :
-           
             self.addpushbutton.setGeometry(20+(300*self.playlistlocate.result[0][0]),20,200,200)
-        if 100+(300*self.playlistlocate.result[0][0])>1000 and 100+(300*self.playlistlocate.result[0][0])<2500:
+        elif 100+(300*self.playlistlocate.result[0][0])>1000 and 100+(300*self.playlistlocate.result[0][0])<2500:
            
             self.addpushbutton.setGeometry(20+(300*(self.playlistlocate.result[0][0]-4)),200*2-100,200,200)
-        if 100+(300*self.playlistlocate.result[0][0])>=2500:    
-            print(100+(300*self.playlistlocate.result[0][0]))
+        elif 100+(300*self.playlistlocate.result[0][0])>=2500:    
+            
             self.addpushbutton.setGeometry(20+(300*(self.playlistlocate.result[0][0]-8)),580,200,200)
 
         self.addpushbutton.setStyleSheet('background: black;''border:1px solid black;''background-image:url(plus.png);')

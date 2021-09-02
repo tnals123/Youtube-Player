@@ -7,9 +7,9 @@ class VideoData:
         
         # self.cur.execute("CREATE TABLE cancelbutton(name TEXT)")
         # self.cur.execute("INSERT INTO user VALUES('asdf')")
-        # self.cur.execute('DROP TABLE 재생목록0')
-        # self.cur.execute('DROP TABLE 재생목록1')
-        # self.cur.execute('DROP TABLE 재생목록2')
+        # self.cur.execute('DROP TABLE 브금')
+        # self.cur.execute('DROP TABLE 브금2')
+        # self.cur.execute('DROP TABLE 브금3')
         # self.cur.execute('DROP TABLE 재생목록3')
         # self.cur.execute('DROP TABLE 재생목록4')
         # self.cur.execute('DROP TABLE 재생목록5')
@@ -21,7 +21,7 @@ class VideoData:
         
         # self.cur.execute("UPDATE count SET count=0")
         # self.cur.execute("DELETE FROM buttonname")
-        # # self.cur.execute("ALTER TABLE '게임영상' RENAME TO '123'")
+        # self.cur.execute("ALTER TABLE '게임영상' RENAME TO '123'")
         # self.conn.commit()
     def __del__(self):
         self.conn.close()

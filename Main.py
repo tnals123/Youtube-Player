@@ -142,7 +142,6 @@ class Mainlogic:
             url='https://www.youtube.com' + v['url_suffix']
             self.videothumb.append(url)
             videotitle.append(url)
-            print(self.videothumb)
    
             
             
@@ -153,7 +152,6 @@ class Mainlogic:
     def asdf(self):
         for i in range(0,len(self.videothumb)):
 
-            print(self.videothumb)
             thumb=self.videothumb[i]
             thumbnail=pafy.new(thumb)
             thumbnailing=thumbnail.bigthumb
@@ -602,9 +600,9 @@ class Mainlogic:
        
 
     def MyEvent(self,i):
-        self.videodata=videodatabase.VideoData()
+        
         self.i=i
-        self.videodata.StoreButtons()
+       
         self.mainlogic.playlist.playlistlocate.buttonlist[self.i].enterEvent=lambda event,i=self.i:self.FolderAnimation(event,i)
         self.mainlogic.playlist.playlistlocate.buttonlist[self.i].leaveEvent=lambda event,i=self.i:self.FolderLeaveAnimation(event,i)
 
@@ -614,10 +612,8 @@ class Mainlogic:
     def VideoListEditButton(self):
         
         self.changelist=[]
-        self.videodata=videodatabase.VideoData()
-        self.videodata.StoreButtons()
-        print(self.videodata.deletebutton)
-        print(self.mainlogic.playlist.playlistlocate.buttonlabellist)
+        
+        
         self.mainlogic.playlist.applybutton.show()
         self.mainlogic.playlist.cancelbutton.show()
         self.mainlogic.playlist.addpushbutton.setDisabled(True)
@@ -644,21 +640,21 @@ class Mainlogic:
                 self.videodata.deletebutton[i].setFont(QtGui.QFont(None,15))
                 self.videodata.deletebutton[i].hide()
             self.videodata.deletebutton[i].show()
-            print( self.videodata.deletebutton)
-       
        
         for i in range(0,len(self.videodata.deletebutton)):
             
             self.changebuttonname=QtWidgets.QLineEdit(self.mainlogic.playlist.playlistlist)
             self.changelist.append(self.changebuttonname)
+            
+            
             if i<4:
                 self.changelist[i].setGeometry(20+(300*i)+40,240,150,25)
-                self.changelist[i].setText(self.mainlogic.playlist.playlistlocate.buttonlabellist[i])
+                self.changelist[i].setText(self.videodata.strbutton[i])
                 self.changelist[i].setStyleSheet('color:black;''background:white;')
                 self.changelist[i].show()  
             if i>=4:
                 self.changelist[i].setGeometry(20+(300*(i-4)+40),500,150,25)
-                self.changelist[i].setText(self.mainlogic.playlist.playlistlocate.buttonlabellist[i])
+                self.changelist[i].setText(self.videodata.strbutton[i])
                 self.changelist[i].setStyleSheet('color:black;''background:white;')
                 self.changelist[i].show() 
 
@@ -669,23 +665,29 @@ class Mainlogic:
             self.mainlogic.playlist.editbutton.hide()
 
     def ApplyButton(self):
-        self.videodata=videodatabase.VideoData()
+        
         self.mainlogic.playlist.addpushbutton.setDisabled(False)
         self.mainlogic.playlist.applybutton.hide()
         self.mainlogic.playlist.cancelbutton.hide()
         self.mainlogic.playlist.editbutton.show()
+        print(self.videodata.strbutton)
         
         for i in range(0,len(self.videodata.deletebutton)):
+            print(self.changelist[i].text())
             try:
-                self.videodata.ChangeTable(self.mainlogic.playlist.playlistlocate.buttonlabellist[i],self.changelist[i].text())
-                self.videodata.ChangePlaylist(self.mainlogic.playlist.playlistlocate.buttonlabellist[i],self.changelist[i].text())
+                self.videodata.ChangeTable(self.videodata.strbutton[i],self.changelist[i].text())
+                self.videodata.ChangePlaylist(self.videodata.strbutton[i],self.changelist[i].text())
             except sqlite3.OperationalError:
                 pass
-            self.mainlogic.playlist.playlistlocate.buttonlabellist[i]=self.changelist[i].text()
+           
+            self.videodata.strbutton[i]=self.changelist[i].text()
             self.videodata.deletebutton[i].hide()
             self.changelist[i].hide()
-            self.mainlogic.playlist.playlistlocate.mybuttonlabellist[i].setText(self.mainlogic.playlist.playlistlocate.buttonlabellist[i])
-            self.StartProgrem()
+            try:
+                self.mainlogic.playlist.playlistlocate.mybuttonlabellist[i].setText(self.videodata.strbutton[i])
+            except IndexError:
+                self.videodata.buttonlabellist[i].setText(self.videodata.strbutton[i])
+            
 
         
 
