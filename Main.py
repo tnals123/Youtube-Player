@@ -515,13 +515,19 @@ class Mainlogic:
      
         self.videodata=videodatabase.VideoData()
         self.videodata.StoreButtons()
-
+        
         for i in range(0,len(self.videodata.buttonlist2)):
             
-            self.mainlogic.playlist.playlistlocate.buttonlist[i].mousePressEvent=lambda event, myplaylist=self.mainlogic.playlist.playlistlocate.buttonlabellist[i]:self.PlayVideo(event,myplaylist)
+            self.mainlogic.playlist.playlistlocate.buttonlist[i].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[i]:self.PlayVideo(event,myplaylist)
         for i in range(0,len(self.mainlogic.playlist.playlistlocate.buttonlist)):
             self.MyEvent(i)
         self.mainlogic.playlist.searchbutton.clicked.connect(self.SearchPage)
+    
+    def AfterChange(self):
+        for i in range(0,len(self.videodata.buttonlist2)):
+            
+            self.mainlogic.playlist.playlistlocate.buttonlist[i].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[i]:self.PlayVideo(event,myplaylist)
+
 
     #페이지 이동
     def SearchPage(self):
@@ -530,7 +536,7 @@ class Mainlogic:
         self.mainlogic.mainwindow.move(600,200)
         self.mainlogic.search.ChoicePlaylist()
         for i in range(0,len(self.mainlogic.search.videodata.buttonlist)):
-            self.mainlogic.search.videodata.buttonlist[i].mousePressEvent=lambda event,button=self.mainlogic.search.videodata.buttonlist[i]:self.PlayListButtonChect(event,button)
+            self.mainlogic.search.videodata.buttonlist[i].mousePressEvent=lambda event,button=self.videodata.strbutton[i]:self.PlayListButtonChect(event,button)
         self.mainlogic.paper.setCurrentIndex(1)
 
     def BackToVideoList(self):
@@ -613,7 +619,7 @@ class Mainlogic:
         
         self.changelist=[]
 
-        
+        print(self.mainlogic.playlist.playlistlocate.buttonlist)
         
         self.mainlogic.playlist.applybutton.show()
         self.mainlogic.playlist.cancelbutton.show()
@@ -671,7 +677,8 @@ class Mainlogic:
         self.mainlogic.playlist.applybutton.hide()
         self.mainlogic.playlist.cancelbutton.hide()
         self.mainlogic.playlist.editbutton.show()
-        
+        self.videodata.FindCount()
+        print(self.videodata.deletebutton)
         for i in range(0,len(self.videodata.deletebutton)):
             
             try:
@@ -687,7 +694,9 @@ class Mainlogic:
                 self.mainlogic.playlist.playlistlocate.mybuttonlabellist[i].setText(self.videodata.strbutton[i])
             except IndexError:
                 self.videodata.buttonlabellist[i].setText(self.videodata.strbutton[i])
-            self.videodata.StoreButtons()
+            self.mainlogic.playlist.playlistlocate.buttonlist[self.videodata.result[0][0]].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[self.videodata.result[0][0]]:self.PlayVideo(event,myplaylist)
+        self.videodata.StoreButtons2()
+        self.AfterChange()
 
         
 
@@ -712,10 +721,10 @@ class Mainlogic:
         self.mainlogic.check.lineedit.setText('재생목록'+str(self.videodata.result[0][0]))
 
     def AddPlaylist(self,event,name2):
-        self.videodata=videodatabase.VideoData()
+        
         self.name2=name2
         self.videodata.CreatePlaylist(self.mainlogic.check.lineedit.text())
-        self.videodata.StoreButtons()
+        
         self.MakePlaylist()
        
         
@@ -743,7 +752,7 @@ class Mainlogic:
         self.videodata.buttonlist[self.videodata.result[0][0]]=QtWidgets.QPushButton(self.mainlogic.playlist.playlistlist)
        
         self.videodata.buttonlabellist[self.videodata.result[0][0]]=QtWidgets.QLabel(self.mainlogic.playlist.playlistlist)
-        
+
         
 
         if 100+(300*self.videodata.result[0][0]<=1000) :
@@ -754,7 +763,7 @@ class Mainlogic:
             self.videodata.buttonlabellist[self.videodata.result[0][0]].setText(self.mainlogic.check.lineedit.text())
             self.videodata.buttonlabellist[self.videodata.result[0][0]].setStyleSheet('color:white;')
 
-            self.videodata.buttonlist[self.videodata.result[0][0]].mousePressEvent=lambda event, myplaylist=self.changelist[self.videodata.result[0][0]].text():self.PlayVideo(event,myplaylist)
+            self.videodata.buttonlist[self.videodata.result[0][0]].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[self.videodata.result[0][0]]:self.PlayVideo(event,myplaylist)
             
             self.videodata.buttonlist[self.videodata.result[0][0]].show()
             self.videodata.buttonlabellist[self.videodata.result[0][0]].show()

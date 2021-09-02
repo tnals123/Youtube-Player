@@ -99,7 +99,13 @@ class VideoData:
         self.cur.execute("UPDATE count set count=count-1")
         self.conn.commit()
         
-    
+    def StoreButtons2(self):
+        self.strbutton=[]
+        self.cur.execute("SELECT * from buttonname")
+        self.buttonlist2=self.cur.fetchall()
+        for i in range(0,len(self.buttonlist2)):
+            self.strbutton.append(self.buttonlist2[i][0])
+            
     def StoreButtons(self):
         self.buttonlist=[]
         self.buttonlabellist=[]

@@ -32,15 +32,15 @@ class SearchUi:
     def ChoicePlaylist(self):
         self.videodata=videodatabase.VideoData()
         self.videodata.StoreButtons()
-        
+        self.videodata.StoreButtons2()
         for i in range(0,len(self.videodata.buttonlist)):
             if i<=8:
                 self.videodata.buttonlist[i]=QtWidgets.QPushButton(self.searchui)
                 self.videodata.buttonlist[i].setGeometry(50,200+i*50,80,25)
-                self.videodata.buttonlist[i].setText(self.videodata.buttonlabellist[i])
+                self.videodata.buttonlist[i].setText(self.videodata.strbutton[i])
                 self.videodata.buttonlist[i].show()
             elif i>8 and i<=16:
                 self.videodata.buttonlist[i]=QtWidgets.QPushButton(self.searchui)
                 self.videodata.buttonlist[i].setGeometry(200,200+i*50,80,25)
-                self.videodata.buttonlist[i].setText(self.videodata.buttonlabellist[i])
+                self.videodata.buttonlist[i].setText(self.videodata.strbutton[i])
                 self.videodata.buttonlist[i].show()
