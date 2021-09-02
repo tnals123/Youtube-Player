@@ -612,6 +612,7 @@ class Mainlogic:
     def VideoListEditButton(self):
         
         self.changelist=[]
+
         
         
         self.mainlogic.playlist.applybutton.show()
@@ -670,10 +671,9 @@ class Mainlogic:
         self.mainlogic.playlist.applybutton.hide()
         self.mainlogic.playlist.cancelbutton.hide()
         self.mainlogic.playlist.editbutton.show()
-        print(self.videodata.strbutton)
         
         for i in range(0,len(self.videodata.deletebutton)):
-            print(self.changelist[i].text())
+            
             try:
                 self.videodata.ChangeTable(self.videodata.strbutton[i],self.changelist[i].text())
                 self.videodata.ChangePlaylist(self.videodata.strbutton[i],self.changelist[i].text())
@@ -687,7 +687,7 @@ class Mainlogic:
                 self.mainlogic.playlist.playlistlocate.mybuttonlabellist[i].setText(self.videodata.strbutton[i])
             except IndexError:
                 self.videodata.buttonlabellist[i].setText(self.videodata.strbutton[i])
-            
+            self.videodata.StoreButtons()
 
         
 
@@ -743,7 +743,7 @@ class Mainlogic:
         self.videodata.buttonlist[self.videodata.result[0][0]]=QtWidgets.QPushButton(self.mainlogic.playlist.playlistlist)
        
         self.videodata.buttonlabellist[self.videodata.result[0][0]]=QtWidgets.QLabel(self.mainlogic.playlist.playlistlist)
-
+        
         
 
         if 100+(300*self.videodata.result[0][0]<=1000) :
@@ -754,7 +754,7 @@ class Mainlogic:
             self.videodata.buttonlabellist[self.videodata.result[0][0]].setText(self.mainlogic.check.lineedit.text())
             self.videodata.buttonlabellist[self.videodata.result[0][0]].setStyleSheet('color:white;')
 
-            self.videodata.buttonlist[self.videodata.result[0][0]].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[self.videodata.result[0][0]]:self.PlayVideo(event,myplaylist)
+            self.videodata.buttonlist[self.videodata.result[0][0]].mousePressEvent=lambda event, myplaylist=self.changelist[self.videodata.result[0][0]].text():self.PlayVideo(event,myplaylist)
             
             self.videodata.buttonlist[self.videodata.result[0][0]].show()
             self.videodata.buttonlabellist[self.videodata.result[0][0]].show()
