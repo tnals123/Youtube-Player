@@ -19,6 +19,11 @@ class SearchUi:
         self.searchlineedit.setGeometry(50,50,500,25)
         self.searchlineedit.setStyleSheet('background:white;')
 
+        self.searchbutton=QtWidgets.QPushButton(self.searchui)
+        self.searchbutton.setGeometry(340,100,50,25)
+        self.searchbutton.setText('검색')
+        self.searchbutton.setStyleSheet('background:black;''border-color:red;''border-style:dashed;''border-width:2px;''color:white;')
+
         self.backtoplaylist=QtWidgets.QPushButton(self.searchui)
         self.backtoplaylist.setGeometry(400,100,200,25)
         self.backtoplaylist.setStyleSheet('background:black;''border-color:red;''border-style:dashed;''border-width:2px;''color:white;')

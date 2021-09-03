@@ -1,6 +1,6 @@
 import sqlite3
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from PyQt5.QtWidgets import QMessageBox
 class VideoData:
     def __init__(self):
         self.DataCheck()
@@ -59,11 +59,16 @@ class VideoData:
             self.urltitle_forminiplayer.append(self.myurl[i][0])
             self.titlelist.append(self.myurl[i][0])
 
-    def AddVideoToPlayList(self,playlist,url):
+    def AddVideoToPlayList(self,event,playlist,url):
+        
         self.playlist=playlist
+        
         self.url=url
-        self.cur.execute("INSERT INTO '"+self.playlist+"' VALUES('"+self.url+"')")
-        self.conn.commit()
+        self.messagebox_open('영상 추가 완료!','영상이 추가되었습니다!')
+        for i in range(0,len(self.playlist)):
+            print(self.playlist)
+            self.cur.execute("INSERT INTO '"+self.playlist[i]+"' VALUES('"+self.url+"')")
+            self.conn.commit()
 
        
     def CreatePlaylist(self,name):
@@ -105,7 +110,7 @@ class VideoData:
         self.buttonlist2=self.cur.fetchall()
         for i in range(0,len(self.buttonlist2)):
             self.strbutton.append(self.buttonlist2[i][0])
-            
+
     def StoreButtons(self):
         self.buttonlist=[]
         self.buttonlabellist=[]
@@ -129,7 +134,13 @@ class VideoData:
         
         
         return self.buttonlist,self.buttonlabellist,self.deletebutton
-        
+    def messagebox_open(self,text1,text2):
+        self.msg=QMessageBox()
+        self.msg.setIcon(QMessageBox.Information)
+        self.msg.setWindowTitle(text1)
+        self.msg.setText(text2)
+        self.msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        retval = self.msg.exec_()
 
     
 

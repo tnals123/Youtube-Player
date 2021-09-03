@@ -1,4 +1,5 @@
 
+from re import search
 from urllib import request
 from PyQt5 import QtCore, QtGui, QtWidgets
 import threading
@@ -15,6 +16,7 @@ import VideoplayerUi
 import requests
 import SearchVideoUi
 from youtube_search import YoutubeSearch
+from PyQt5.QtWidgets import QMessageBox
 import json
 ################################   데이터베이스에 리스트 하나 더 만들어서 매개변수에 넣을 리스트 하나 만들기
 class Mainlogic:
@@ -29,6 +31,7 @@ class Mainlogic:
         
         self.instance = vlc.Instance()
         self.mediaplayer = self.instance.media_player_new()
+        self.msg = QMessageBox()
         
      
         
@@ -64,8 +67,8 @@ class Mainlogic:
         self.videoplayerui.positionslider.sliderMoved.connect(self.setPosition)
         self.videoplayerui.timer.timeout.connect(self.updateUI)
         self.videoplayerui.editbutton.clicked.connect(self.ShowDeleteButton)
-        
-        
+        self.mainlogic.search.searchbutton.clicked.connect(self.AddVideoToPlayList)
+        self.searchvideoui.backbutton.clicked.connect(self.Hide)
         #미니플레이어 함수
         self.mainlogic.miniplayerui.pausebutton.clicked.connect(self.PlayPause)
         self.mainlogic.miniplayerui.playbutton.clicked.connect(self.PlayPause)
@@ -86,7 +89,13 @@ class Mainlogic:
         
         webbrowser.open("https://www.youtube.com/")     
 
-   
+    def messagebox_open(self,text1,text2):
+        
+        self.msg.setIcon(QMessageBox.Information)
+        self.msg.setWindowTitle(text1)
+        self.msg.setText(text2)
+        self.msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        retval = self.msg.exec_()
 
     def Timeevent(self):
         if self.step >= 100:
@@ -130,41 +139,76 @@ class Mainlogic:
         for i in range(0,len(self.mainlogic.search.videodata.buttonlist)):
             if not self.mainlogic.search.videodata.buttonlist[i].isEnabled():
                 self.buttonlist.append(self.mainlogic.search.videodata.buttonlist[i].text())
-         
-        self.search=self.mainlogic.search.searchlineedit.text()
-        
-        results = YoutubeSearch(self.search, max_results=3).to_json()
-        results_dict = json.loads(results)
-        for v in results_dict['videos']:
+        if len(self.buttonlist)==0:
+            self.messagebox_open('서순 잘못됨','영상을 추가할 재생목록을 먼저 고르세요.')
+        else:
+            print('asdf')
+            self.searchvideoui.mainwindow.show()
+            
             self.videothumb=[]
-            videotitle=[]
-            
-            url='https://www.youtube.com' + v['url_suffix']
-            self.videothumb.append(url)
-            videotitle.append(url)
-   
+            self.videolabel=[]
+            self.videoaddbutton=[]
+            self.videourl=[]
             
             
-        for i in range(0,len(self.buttonlist)):
-           
-            self.videodata.AddVideoToPlayList(self.buttonlist[i],url)
+            self.search=self.mainlogic.search.searchlineedit.text()
             
-    def asdf(self):
-        for i in range(0,len(self.videothumb)):
+            results = YoutubeSearch(self.search, max_results=10).to_json()
+            results_dict = json.loads(results)
+            for v in results_dict['videos']:
+                
+                
+                
+                videotitle=[]
+                url='https://www.youtube.com' + v['url_suffix']
+                self.videothumb.append(url)
+                self.videolabel.append(url)
+                self.videoaddbutton.append(url)
+                videotitle.append(url)
+                self.videourl.append(url)
+    
+                
+                
+            
 
-            thumb=self.videothumb[i]
-            thumbnail=pafy.new(thumb)
-            thumbnailing=thumbnail.bigthumb
+            # for i in range(0,len(self.videothumb)):
+            #     myvideosearch=SearchVideo(self.videothumb[i],self.videolabel[i],self.searchvideoui.videolist,i)
+            #     myvideosearch.IsthreadOn=True
+            #     myvideosearch.start()
+            
+            for i in range(0,len(self.videothumb)):
+                print(self.buttonlist)
+                print(self.videourl)
+                thumb=self.videothumb[i]
+                thumbnail=pafy.new(thumb)
+                thumbnailing=thumbnail.bigthumb
+                videotitle=pafy.new(thumb)
+                titlename=videotitle.title
+                image=QtGui.QImage()
+                image.loadFromData(requests.get(thumbnailing).content)
+                image.scaled(300,140)
 
-            image=QtGui.QImage()
-            image.loadFromData(requests.get(thumbnailing).content)
-            image.scaled(225,140)
+                self.videothumb[i]=QtWidgets.QLabel(self.searchvideoui.videolist)
+                self.videothumb[i].setGeometry(0,200*i,320,200)
+                self.videothumb[i].setPixmap(QtGui.QPixmap(image))
 
-            self.videothumb[i]=QtWidgets.QLabel(self.searchvideoui.paper)
-            self.videothumb[i].setGeometry(0,300*i,200,200)
-            self.videothumb[i].setPixmap(QtGui.QPixmap(image))
+                self.videolabel[i]=QtWidgets.QLabel(self.searchvideoui.videolist)
+                self.videolabel[i].setGeometry(400,30+(200*i),400,25)
+                self.videolabel[i].setText(titlename)
+                self.videolabel[i].setStyleSheet('color:white;')
 
-            self.videothumb[i].show()  
+                self.videoaddbutton[i]=QtWidgets.QPushButton(self.searchvideoui.videolist)
+                self.videoaddbutton[i].setGeometry(500,120+(200*i),100,30)
+                self.videoaddbutton[i].setText('추가하기')
+                self.videoaddbutton[i].setStyleSheet('background:white;')
+                self.videoaddbutton[i].mousePressEvent=lambda event,playlist=self.buttonlist,url=self.videourl[i],:self.videodata.AddVideoToPlayList(event,playlist,url)
+                
+                
+                # for i in range(0,len(self.buttonlist)):
+                # self.videodata.AddVideoToPlayList(self.buttonlist[i],url)
+                self.videothumb[i].show() 
+                self.videolabel[i].show() 
+                self.videoaddbutton[i].show()
            
            
 
@@ -528,7 +572,8 @@ class Mainlogic:
             
             self.mainlogic.playlist.playlistlocate.buttonlist[i].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[i]:self.PlayVideo(event,myplaylist)
 
-
+    def Hide(self):
+        self.searchvideoui.mainwindow.hide()
     #페이지 이동
     def SearchPage(self):
         self.mainlogic.mainwindow.setWindowTitle("Search Page")
@@ -536,11 +581,11 @@ class Mainlogic:
         self.mainlogic.mainwindow.move(600,200)
         self.mainlogic.search.ChoicePlaylist()
         for i in range(0,len(self.mainlogic.search.videodata.buttonlist)):
-            self.mainlogic.search.videodata.buttonlist[i].mousePressEvent=lambda event,button=self.videodata.strbutton[i]:self.PlayListButtonChect(event,button)
+            self.mainlogic.search.videodata.buttonlist[i].mousePressEvent=lambda event,button=self.mainlogic.search.videodata.buttonlist[i]:self.PlayListButtonChect(event,button)
         self.mainlogic.paper.setCurrentIndex(1)
 
     def BackToVideoList(self):
-        
+        self.searchvideoui.mainwindow.hide()
         try:
             for i in range(0,len(self.videodata.myurl)):
                 self.videodata.urlbuttonlist[i].deleteLater()
@@ -911,6 +956,42 @@ class VideoThread_Shuffled(threading.Thread):
 
             if self.videocount==0:
                 break
+
+# class SearchVideo(threading.Thread):
+#     def __init__(self,videothumb,videotitle,videoscreen,i):
+#         threading.Thread.__init__(self)
+#         self.IsthreadOn=False
+#         self.videothumb=videothumb
+#         self.videotitle=videotitle
+#         # self.videoaddbutton=videoaddbutton
+#         self.videoscreen=videoscreen
+#         self.i=i
+#     def run(self):
+        
+#         if self.IsthreadOn==True:
+#             thumb=self.videothumb
+#             thumbnail=pafy.new(thumb)
+#             thumbnailing=thumbnail.bigthumb
+#             videotitle=pafy.new(thumb)
+#             titlename=videotitle.title
+#             image=QtGui.QImage()
+#             image.loadFromData(requests.get(thumbnailing).content)
+#             image.scaled(300,140)
+
+#             print(titlename)
+
+#             # self.videothumb=QtWidgets.QLabel(self.videoscreen)
+#             # self.videothumb.setGeometry(0,200*self.i,320,200)
+#             # self.videothumb.setPixmap(QtGui.QPixmap(image))
+
+#             self.videotitle=QtWidgets.QLabel(self.videoscreen)
+#             # self.videotitle.setGeometry(400,30+(200*self.i),400,25)
+#             # self.videotitle.setText(titlename)
+#             # self.videotitle.setStyleSheet('color:white;')
+
+#             # self.videothumb.show() 
+#             self.videotitle.show() 
+            
 
 
 
