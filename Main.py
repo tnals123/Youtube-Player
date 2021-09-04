@@ -333,22 +333,25 @@ class Mainlogic:
         self.videoplayerui.editbutton.show()
         self.videoplayerui.cancelbutton.hide()
         for i in range(0,len(self.videodata.myurl)):
-            self.videodata.deletebutton2[i].hide()
+            try:
+                self.videodeletebutton[i].hide()
+            except RuntimeError:
+                pass
 
     def ShowDeleteButton(self):
-        
+        self.videodeletebutton=[]
         self.videoplayerui.editbutton.hide()
         self.videoplayerui.cancelbutton.show()
         self.videoplayerui.cancelbutton.clicked.connect(self.Cancel)
         for i in range(0,len(self.videodata.myurl)):
-              
-                self.videodata.deletebutton2[i]=QtWidgets.QPushButton(self.videoplayerui.videolistlabelarea)
-                self.videodata.deletebutton2[i].setGeometry(265,25+(200*i),30,30)
-                self.videodata.deletebutton2[i].setStyleSheet('border-radius:15px;''background:red;')
-                self.videodata.deletebutton2[i].setText('X')
-                self.videodata.deletebutton2[i].setFont(QtGui.QFont(None,15))
-                self.videodata.deletebutton2[i].show()
-                self.videodata.deletebutton2[i].mousePressEvent=lambda event,video=self.videodata.myurl[i][0],label=self.videodata.urltitle[i],video2=self.videodata.urlbuttonlist[i],button=self.videodata.deletebutton2[i]:self.DeleteVideo(event,video,label,video2,button)
+                self.videodeletebutton.append(self.videodata.myurl[i])
+                self.videodeletebutton[i]=QtWidgets.QPushButton(self.videoplayerui.videolistlabelarea)
+                self.videodeletebutton[i].setGeometry(265,25+(200*i),30,30)
+                self.videodeletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
+                self.videodeletebutton[i].setText('X')
+                self.videodeletebutton[i].setFont(QtGui.QFont(None,15))
+                self.videodeletebutton[i].show()
+                self.videodeletebutton[i].mousePressEvent=lambda event,video=self.videodata.myurl[i][0],label=self.videodata.urltitle[i],video2=self.videodata.urlbuttonlist[i],button=self.videodeletebutton[i]:self.DeleteVideo(event,video,label,video2,button)
                 
 
     def PlayVideo(self,event,myplaylist):
@@ -569,9 +572,10 @@ class Mainlogic:
     
     def AfterChange(self):
         for i in range(0,len(self.videodata.buttonlist2)):
-            
-            self.mainlogic.playlist.playlistlocate.buttonlist[i].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[i]:self.PlayVideo(event,myplaylist)
-
+            try:
+                self.mainlogic.playlist.playlistlocate.buttonlist[i].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[i]:self.PlayVideo(event,myplaylist)
+            except IndexError:
+                pass
     def Hide(self):
         self.searchvideoui.mainwindow.hide()
     #페이지 이동
@@ -586,10 +590,15 @@ class Mainlogic:
 
     def BackToVideoList(self):
         self.searchvideoui.mainwindow.hide()
+        
         try:
             for i in range(0,len(self.videodata.myurl)):
-                self.videodata.urlbuttonlist[i].deleteLater()
-                self.videodata.urltitle[i].deleteLater()
+                try:
+                    
+                    self.videodata.urlbuttonlist[i].deleteLater()
+                    self.videodata.urltitle[i].deleteLater()
+                except RuntimeError:
+                    pass
         except IndexError:
             pass
         self.mainlogic.mainwindow.setWindowTitle("Playlist")
@@ -717,13 +726,15 @@ class Mainlogic:
             self.mainlogic.playlist.editbutton.hide()
 
     def ApplyButton(self):
-        
+        print('버튼라벨리스트',self.videodata.buttonlabellist)
+        print('버튼라벨리스트2',self.mainlogic.playlist.playlistlocate.mybuttonlabellist)
+        # print('버튼라벨리스트3',)
         self.mainlogic.playlist.addpushbutton.setDisabled(False)
         self.mainlogic.playlist.applybutton.hide()
         self.mainlogic.playlist.cancelbutton.hide()
         self.mainlogic.playlist.editbutton.show()
         self.videodata.FindCount()
-        print(self.videodata.deletebutton)
+        
         for i in range(0,len(self.videodata.deletebutton)):
             
             try:
@@ -738,8 +749,13 @@ class Mainlogic:
             try:
                 self.mainlogic.playlist.playlistlocate.mybuttonlabellist[i].setText(self.videodata.strbutton[i])
             except IndexError:
-                self.videodata.buttonlabellist[i].setText(self.videodata.strbutton[i])
-            self.mainlogic.playlist.playlistlocate.buttonlist[self.videodata.result[0][0]].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[self.videodata.result[0][0]]:self.PlayVideo(event,myplaylist)
+                print(self.videodata.buttonlabellist[self.videodata.result[0][0]-1])
+                self.videodata.buttonlabellist[self.videodata.result[0][0]-1].setText(self.videodata.strbutton[i])
+                
+            try:
+                self.mainlogic.playlist.playlistlocate.buttonlist[i].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[i]:self.PlayVideo(event,myplaylist)
+            except IndexError:
+                pass
         self.videodata.StoreButtons2()
         self.AfterChange()
 
@@ -808,7 +824,7 @@ class Mainlogic:
             self.videodata.buttonlabellist[self.videodata.result[0][0]].setText(self.mainlogic.check.lineedit.text())
             self.videodata.buttonlabellist[self.videodata.result[0][0]].setStyleSheet('color:white;')
 
-            self.videodata.buttonlist[self.videodata.result[0][0]].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[self.videodata.result[0][0]]:self.PlayVideo(event,myplaylist)
+            self.videodata.buttonlist[self.videodata.result[0][0]].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[self.videodata.result[0][0]-1]:self.PlayVideo(event,myplaylist)
             
             self.videodata.buttonlist[self.videodata.result[0][0]].show()
             self.videodata.buttonlabellist[self.videodata.result[0][0]].show()
