@@ -97,20 +97,21 @@ class VideoData:
         self.cur.execute("ALTER TABLE '"+self.name+"' RENAME TO '"+self.changename+"'")
         self.conn.commit()
 
-    def DeletePlaylist(self,name,label):
+    def DeletePlaylist(self,name):
         self.name=name
-        self.label=label
-        self.cur.execute("DELETE TABLE '"+self.name+"' ")
-        self.cur.execute("UPDATE count set count=count-1")
+        self.cur.execute("DROP TABLE '"+self.name+"' ")
+        self.cur.execute("DELETE FROM buttonname WHERE NAME = '"+self.name+"'")  
+        self.cur.execute("UPDATE count SET count=count-1")
         self.conn.commit()
         
     def StoreButtons2(self):
         self.strbutton=[]
+        
         self.cur.execute("SELECT * from buttonname")
         self.buttonlist2=self.cur.fetchall()
         for i in range(0,len(self.buttonlist2)):
             self.strbutton.append(self.buttonlist2[i][0])
-
+           
     def StoreButtons(self):
         self.buttonlist=[]
         self.buttonlabellist=[]

@@ -668,12 +668,31 @@ class Mainlogic:
 
     #재생목록 편집 함수
 
+    def check(self,event,button,label):
+        print(self.videodata.buttonlist)
+        print(self.videodata.buttonlabellist)
+        self.videodata.DeletePlaylist(button)
+        a=self.videodata.strbutton.index(button)
+        
+        
+        try:
+            self.mainlogic.playlist.playlistlocate.buttonlist[a].deleteLater()
+            self.mainlogic.playlist.playlistlocate.mybuttonlabellist[a].deleteLater()
+        except IndexError:
+            
+            self.videodata.buttonlist[a].deleteLater()
+            self.videodata.buttonlabellist[a].deleteLater()
+        self.videodata.StoreButtons2()
+
 
     def VideoListEditButton(self):
         
         self.changelist=[]
-
-        print(self.mainlogic.playlist.playlistlocate.buttonlist)
+        # print('스타버튼리스트')
+        # print(self.videodata.strbutton)
+        # print('리스트리스트')
+        # print(self.videodata.buttonlabellist)
+        
         
         self.mainlogic.playlist.applybutton.show()
         self.mainlogic.playlist.cancelbutton.show()
@@ -688,6 +707,10 @@ class Mainlogic:
                 self.videodata.deletebutton[i].setText('X')
                 self.videodata.deletebutton[i].setFont(QtGui.QFont(None,15))
                 self.videodata.deletebutton[i].hide()
+                try:
+                    self.videodata.deletebutton[i].mousePressEvent=lambda event,button=self.videodata.strbutton[i],label=self.videodata.strbutton[i]:self.check(event,button,label)
+                except IndexError:
+                    pass
             if i>=4 and i<8:
                 self.videodata.deletebutton[i].setGeometry(20+(300*(i-4))+170,360,30,30)
                 self.videodata.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
@@ -709,10 +732,13 @@ class Mainlogic:
             
             
             if i<4:
-                self.changelist[i].setGeometry(20+(300*i)+40,240,150,25)
-                self.changelist[i].setText(self.videodata.strbutton[i])
-                self.changelist[i].setStyleSheet('color:black;''background:white;')
-                self.changelist[i].show()  
+                try:
+                    self.changelist[i].setGeometry(20+(300*i)+40,240,150,25)
+                    self.changelist[i].setText(self.videodata.strbutton[i])
+                    self.changelist[i].setStyleSheet('color:black;''background:white;')
+                    self.changelist[i].show()  
+                except IndexError:
+                    pass
             if i>=4:
                 self.changelist[i].setGeometry(20+(300*(i-4)+40),500,150,25)
                 self.changelist[i].setText(self.videodata.strbutton[i])
@@ -720,9 +746,6 @@ class Mainlogic:
                 self.changelist[i].show() 
 
 
-
-
-          
             self.mainlogic.playlist.editbutton.hide()
 
     def ApplyButton(self):
@@ -749,7 +772,7 @@ class Mainlogic:
             try:
                 self.mainlogic.playlist.playlistlocate.mybuttonlabellist[i].setText(self.videodata.strbutton[i])
             except IndexError:
-                print(self.videodata.buttonlabellist[self.videodata.result[0][0]-1])
+                
                 self.videodata.buttonlabellist[self.videodata.result[0][0]-1].setText(self.videodata.strbutton[i])
                 
             try:
@@ -853,7 +876,8 @@ class Mainlogic:
             self.videodata.buttonlist[self.videodata.result[0][0]].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[self.videodata.result[0][0]]:self.PlayVideo(event,myplaylist)
 
             self.videodata.buttonlist[self.videodata.result[0][0]].show()     
-            self.videodata.buttonlabellist[self.videodata.result[0][0]].show()         
+            self.videodata.buttonlabellist[self.videodata.result[0][0]].show()       
+        self.videodata.StoreButtons2()  
 
 class VideoThread_Repeat(threading.Thread):
     def __init__(self,video):

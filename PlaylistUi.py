@@ -67,7 +67,7 @@ class Playlist:
         elif 100+(300*self.playlistlocate.result[0][0])>=2500:    
             print('정답2')
             self.addpushbutton.setGeometry(20+(300*(self.playlistlocate.result[0][0]-8)),580,200,200)
-
+            
         self.addpushbutton.setStyleSheet('background: black;''border:1px solid black;''background-image:url(plus.png);')
 
         self.playlistlocate.StoreButtons()
