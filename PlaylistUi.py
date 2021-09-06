@@ -62,10 +62,10 @@ class Playlist:
             print(100+(300*self.playlistlocate.result[0][0]))
             self.addpushbutton.setGeometry(20+(300*self.playlistlocate.result[0][0]),20,200,200)
         elif 100+(300*self.playlistlocate.result[0][0])>1000 and 100+(300*self.playlistlocate.result[0][0])<2500:
-            print('정답')
+            
             self.addpushbutton.setGeometry(20+(300*(self.playlistlocate.result[0][0]-4)),200*2-100,200,200)
         elif 100+(300*self.playlistlocate.result[0][0])>=2500:    
-            print('정답2')
+         
             self.addpushbutton.setGeometry(20+(300*(self.playlistlocate.result[0][0]-8)),580,200,200)
             
         self.addpushbutton.setStyleSheet('background: black;''border:1px solid black;''background-image:url(plus.png);')

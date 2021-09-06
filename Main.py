@@ -22,11 +22,15 @@ import json
 class Mainlogic:
     def __init__(self):
         self.count=0
-        
+        self.mybuttonlist=[]
+        self.mybuttonlabellist=[]
         self.mainlogic=ConnectUi.Connect()
         self.videoplayerui=VideoplayerUi.VideoPlayer()
         
-        
+        for i in range(0,len(self.mainlogic.playlist.playlistlocate.buttonlist)):
+            self.mybuttonlist.append(self.mainlogic.playlist.playlistlocate.buttonlist[i])
+            self.mybuttonlabellist.append(self.mainlogic.playlist.playlistlocate.mybuttonlabellist[i])
+
         self.mainlogic.show()
         
         self.instance = vlc.Instance()
@@ -669,24 +673,29 @@ class Mainlogic:
     #재생목록 편집 함수
 
     def check(self,event,button,label):
-        print(self.videodata.buttonlist)
-        print(self.videodata.buttonlabellist)
+        self.videodata.StoreButtons2()
+        print('asdf')
+        print(button)
+        print(self.mybuttonlist)
         self.videodata.DeletePlaylist(button)
         a=self.videodata.strbutton.index(button)
+       
+        
+        print(a)
+        print(self.mybuttonlist)
+        print(self.mybuttonlabellist)
+        print(self.videodata.deletebutton)
+        
+        self.mybuttonlist[a].deleteLater()
+        self.mybuttonlabellist[a].deleteLater()
+        self.changelist[a].deleteLater()
+        self.mydeletebutton[a].deleteLater()
         
         
-        try:
-            self.mainlogic.playlist.playlistlocate.buttonlist[a].deleteLater()
-            self.mainlogic.playlist.playlistlocate.mybuttonlabellist[a].deleteLater()
-        except IndexError:
-            
-            self.videodata.buttonlist[a].deleteLater()
-            self.videodata.buttonlabellist[a].deleteLater()
-        self.videodata.StoreButtons2()
 
 
     def VideoListEditButton(self):
-        
+        self.mydeletebutton=[]
         self.changelist=[]
         # print('스타버튼리스트')
         # print(self.videodata.strbutton)
@@ -698,9 +707,10 @@ class Mainlogic:
         self.mainlogic.playlist.cancelbutton.show()
         self.mainlogic.playlist.addpushbutton.setDisabled(True)
 
-        for i in range(0,len(self.videodata.deletebutton)):
+        for i in range(0,len(self.videodata.strbutton)):
             
             self.videodata.deletebutton[i]=QtWidgets.QPushButton(self.mainlogic.playlist.playlistlist)
+            self.mydeletebutton.append(self.videodata.deletebutton[i])
             if i<=4 :
                 self.videodata.deletebutton[i].setGeometry(20+(300*i)+170,60,30,30)
                 self.videodata.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
@@ -749,6 +759,7 @@ class Mainlogic:
             self.mainlogic.playlist.editbutton.hide()
 
     def ApplyButton(self):
+        
         print('버튼라벨리스트',self.videodata.buttonlabellist)
         print('버튼라벨리스트2',self.mainlogic.playlist.playlistlocate.mybuttonlabellist)
         # print('버튼라벨리스트3',)
@@ -758,23 +769,26 @@ class Mainlogic:
         self.mainlogic.playlist.editbutton.show()
         self.videodata.FindCount()
         
-        for i in range(0,len(self.videodata.deletebutton)):
+        for i in range(0,len(self.videodata.strbutton)):
             
             try:
                 self.videodata.ChangeTable(self.videodata.strbutton[i],self.changelist[i].text())
                 self.videodata.ChangePlaylist(self.videodata.strbutton[i],self.changelist[i].text())
-            except sqlite3.OperationalError:
+            except :
                 pass
-           
-            self.videodata.strbutton[i]=self.changelist[i].text()
-            self.videodata.deletebutton[i].hide()
-            self.changelist[i].hide()
             try:
-                self.mainlogic.playlist.playlistlocate.mybuttonlabellist[i].setText(self.videodata.strbutton[i])
-            except IndexError:
-                
-                self.videodata.buttonlabellist[self.videodata.result[0][0]-1].setText(self.videodata.strbutton[i])
-                
+                self.videodata.strbutton[i]=self.changelist[i].text()
+            except :
+                pass
+            try:
+                self.videodata.deletebutton[i].hide()
+                self.changelist[i].hide()
+            except RuntimeError:
+                pass
+            try:
+                self.mybuttonlabellist[i].setText(self.videodata.strbutton[i])
+            except :
+                pass
             try:
                 self.mainlogic.playlist.playlistlocate.buttonlist[i].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[i]:self.PlayVideo(event,myplaylist)
             except IndexError:
@@ -832,12 +846,12 @@ class Mainlogic:
         
         self.videodata.FindCount()
         self.videodata.StoreButtons()
-       
+        self.videodata.StoreButtons2()
         self.videodata.buttonlist[self.videodata.result[0][0]]=QtWidgets.QPushButton(self.mainlogic.playlist.playlistlist)
        
         self.videodata.buttonlabellist[self.videodata.result[0][0]]=QtWidgets.QLabel(self.mainlogic.playlist.playlistlist)
-
-        
+        self.mybuttonlist.append(self.videodata.buttonlist[self.videodata.result[0][0]])
+        self.mybuttonlabellist.append(self.videodata.buttonlabellist[self.videodata.result[0][0]])
 
         if 100+(300*self.videodata.result[0][0]<=1000) :
             self.videodata.buttonlist[self.videodata.result[0][0]].setGeometry(20+(300*self.videodata.result[0][0]),20,200,200)
@@ -876,7 +890,8 @@ class Mainlogic:
             self.videodata.buttonlist[self.videodata.result[0][0]].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[self.videodata.result[0][0]]:self.PlayVideo(event,myplaylist)
 
             self.videodata.buttonlist[self.videodata.result[0][0]].show()     
-            self.videodata.buttonlabellist[self.videodata.result[0][0]].show()       
+            self.videodata.buttonlabellist[self.videodata.result[0][0]].show() 
+           
         self.videodata.StoreButtons2()  
 
 class VideoThread_Repeat(threading.Thread):
