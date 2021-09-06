@@ -673,7 +673,7 @@ class Mainlogic:
     #재생목록 편집 함수
 
     def check(self,event,button,label):
-        self.videodata.StoreButtons2()
+        
         print('asdf')
         print(button)
         print(self.mybuttonlist)
@@ -681,26 +681,28 @@ class Mainlogic:
         a=self.videodata.strbutton.index(button)
        
         
+        
         print(a)
         print(self.mybuttonlist)
         print(self.mybuttonlabellist)
-        print(self.videodata.deletebutton)
-        
+        print(self.videodata.strbutton)
         self.mybuttonlist[a].deleteLater()
         self.mybuttonlabellist[a].deleteLater()
         self.changelist[a].deleteLater()
         self.mydeletebutton[a].deleteLater()
+        del self.mybuttonlist[a]
+        del self.mybuttonlabellist[a]
+        del self.mydeletebutton[a]
+        del self.changelist[a]
         
+        self.videodata.StoreButtons2()
         
 
 
     def VideoListEditButton(self):
         self.mydeletebutton=[]
         self.changelist=[]
-        # print('스타버튼리스트')
-        # print(self.videodata.strbutton)
-        # print('리스트리스트')
-        # print(self.videodata.buttonlabellist)
+       
         
         
         self.mainlogic.playlist.applybutton.show()
@@ -735,7 +737,7 @@ class Mainlogic:
                 self.videodata.deletebutton[i].hide()
             self.videodata.deletebutton[i].show()
        
-        for i in range(0,len(self.videodata.deletebutton)):
+        for i in range(0,len(self.videodata.strbutton)):
             
             self.changebuttonname=QtWidgets.QLineEdit(self.mainlogic.playlist.playlistlist)
             self.changelist.append(self.changebuttonname)
@@ -780,11 +782,10 @@ class Mainlogic:
                 self.videodata.strbutton[i]=self.changelist[i].text()
             except :
                 pass
-            try:
-                self.videodata.deletebutton[i].hide()
-                self.changelist[i].hide()
-            except RuntimeError:
-                pass
+           
+            self.mydeletebutton[i].hide()
+            self.changelist[i].hide()
+            
             try:
                 self.mybuttonlabellist[i].setText(self.videodata.strbutton[i])
             except :
