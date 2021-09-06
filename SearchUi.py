@@ -25,14 +25,11 @@ class SearchUi:
         self.searchbutton.setStyleSheet('background:black;''border-color:red;''border-style:dashed;''border-width:2px;''color:white;')
 
         self.backtoplaylist=QtWidgets.QPushButton(self.searchui)
-        self.backtoplaylist.setGeometry(400,100,200,25)
+        self.backtoplaylist.setGeometry(260,550,200,25)
         self.backtoplaylist.setStyleSheet('background:black;''border-color:red;''border-style:dashed;''border-width:2px;''color:white;')
         self.backtoplaylist.setText('재생목록으로 돌아가기')
 
-        self.okbutton=QtWidgets.QPushButton(self.searchui)
-        self.okbutton.setGeometry(260,550,50,25)
-        self.okbutton.setStyleSheet('background:black;''border-color:red;''border-style:dashed;''border-width:2px;''color:white;')
-        self.okbutton.setText('확인')
+        
 
     def ChoicePlaylist(self):
         self.videodata=videodatabase.VideoData()

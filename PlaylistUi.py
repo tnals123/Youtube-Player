@@ -46,11 +46,7 @@ class Playlist:
         self.applybutton.setText('적용하기')
         self.applybutton.hide()
         
-        self.cancelbutton=QtWidgets.QPushButton(self.playlistui)
-        self.cancelbutton.setGeometry(870,260,120,30)
-        self.cancelbutton.setStyleSheet('background: #1C1C1C;''color:white;''border-style:dashed;''border-width:2px;''border-color:red;')
-        self.cancelbutton.setText('취소하기')
-        self.cancelbutton.hide()
+        
 
         self.youtube=QtWidgets.QPushButton(self.playlistui)
         self.youtube.setGeometry(100,40,150,60)

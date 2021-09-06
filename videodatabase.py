@@ -44,6 +44,12 @@ class VideoData:
         self.name=name
         self.cur.execute("INSERT INTO '"+self.name+"' VALUES('"+self.url+"')")
         self.conn.commit()
+        
+    def FindVideoUrl2(self,name):
+        self.cur.execute("SELECT * from '"+self.name+"'")
+        self.myurl=self.cur.fetchall()
+        self.conn.commit()
+
 
     def FindVideoUrl(self,name):
         self.name=name

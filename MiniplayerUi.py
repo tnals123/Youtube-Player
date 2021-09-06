@@ -20,6 +20,7 @@ class MiniplayerUi:
 
         self.backbutton=QtWidgets.QPushButton(self.miniplayer)
         self.backbutton.setGeometry(50,50,30,30)
+        self.backbutton.setShortcut('Left')
         self.backbutton.setStyleSheet('background-image:url(previous.jpg);''border:1px solid black;')
 
 
@@ -33,15 +34,18 @@ class MiniplayerUi:
 
         self.pausebutton=QtWidgets.QPushButton(self.miniplayer)
         self.pausebutton.setGeometry(100,50,30,30)
+        self.pausebutton.setShortcut('space')
         self.pausebutton.setStyleSheet('background-image:url(pause.jpg);''border:1px solid black;')
 
         self.playbutton=QtWidgets.QPushButton(self.miniplayer)
         self.playbutton.setGeometry(100,50,30,30)
+        self.playbutton.setShortcut('space')
         self.playbutton.setStyleSheet('background-image:url(play.jpg);''border:1px solid black;')
         self.playbutton.hide()
 
         self.nextbutton=QtWidgets.QPushButton(self.miniplayer)
         self.nextbutton.setGeometry(200,50,30,30)
+        self.nextbutton.setShortcut('Right')
         self.nextbutton.setStyleSheet('background-image:url(next.jpg);''border:1px solid black;')
 
         self.stopbutton=QtWidgets.QPushButton(self.miniplayer)
