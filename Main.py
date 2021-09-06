@@ -185,36 +185,38 @@ class Mainlogic:
                 print(self.buttonlist)
                 print(self.videourl)
                 thumb=self.videothumb[i]
-                thumbnail=pafy.new(thumb)
-                thumbnailing=thumbnail.bigthumb
-                videotitle=pafy.new(thumb)
-                titlename=videotitle.title
-                image=QtGui.QImage()
-                image.loadFromData(requests.get(thumbnailing).content)
-                image.scaled(300,140)
-
-                self.videothumb[i]=QtWidgets.QLabel(self.searchvideoui.videolist)
-                self.videothumb[i].setGeometry(0,200*i,320,200)
-                self.videothumb[i].setPixmap(QtGui.QPixmap(image))
-
-                self.videolabel[i]=QtWidgets.QLabel(self.searchvideoui.videolist)
-                self.videolabel[i].setGeometry(400,30+(200*i),400,25)
-                self.videolabel[i].setText(titlename)
-                self.videolabel[i].setStyleSheet('color:white;')
-
-                self.videoaddbutton[i]=QtWidgets.QPushButton(self.searchvideoui.videolist)
-                self.videoaddbutton[i].setGeometry(500,120+(200*i),100,30)
-                self.videoaddbutton[i].setText('추가하기')
-                self.videoaddbutton[i].setStyleSheet('background:white;')
-                self.videoaddbutton[i].mousePressEvent=lambda event,playlist=self.buttonlist,url=self.videourl[i],:self.videodata.AddVideoToPlayList(event,playlist,url)
+                try:
+                    thumbnail=pafy.new(thumb)
+                    thumbnailing=thumbnail.bigthumb
+                    videotitle=pafy.new(thumb)
+                    titlename=videotitle.title
+                    image=QtGui.QImage()
+                    image.loadFromData(requests.get(thumbnailing).content)
+                    image.scaled(300,140)
                 
-                
-                # for i in range(0,len(self.buttonlist)):
-                # self.videodata.AddVideoToPlayList(self.buttonlist[i],url)
-                self.videothumb[i].show() 
-                self.videolabel[i].show() 
-                self.videoaddbutton[i].show()
-           
+                    self.videothumb[i]=QtWidgets.QLabel(self.searchvideoui.videolist)
+                    self.videothumb[i].setGeometry(0,200*i,320,200)
+                    self.videothumb[i].setPixmap(QtGui.QPixmap(image))
+
+                    self.videolabel[i]=QtWidgets.QLabel(self.searchvideoui.videolist)
+                    self.videolabel[i].setGeometry(400,30+(200*i),400,25)
+                    self.videolabel[i].setText(titlename)
+                    self.videolabel[i].setStyleSheet('color:white;')
+
+                    self.videoaddbutton[i]=QtWidgets.QPushButton(self.searchvideoui.videolist)
+                    self.videoaddbutton[i].setGeometry(500,120+(200*i),100,30)
+                    self.videoaddbutton[i].setText('추가하기')
+                    self.videoaddbutton[i].setStyleSheet('background:white;')
+                    self.videoaddbutton[i].mousePressEvent=lambda event,playlist=self.buttonlist,url=self.videourl[i],:self.videodata.AddVideoToPlayList(event,playlist,url)
+                    
+                    
+                    # for i in range(0,len(self.buttonlist)):
+                    # self.videodata.AddVideoToPlayList(self.buttonlist[i],url)
+                    self.videothumb[i].show() 
+                    self.videolabel[i].show() 
+                    self.videoaddbutton[i].show()
+                except :
+                    pass
            
 
     ###### 영상 재생 함수
@@ -361,7 +363,7 @@ class Mainlogic:
                 
 
     def PlayVideo(self,event,myplaylist):
-        
+        print(self.videodata.strbutton)
         self.videoplayerui.mainwindow.setWindowTitle("Video Player")
         self.myplaylist=myplaylist
         
@@ -676,10 +678,10 @@ class Mainlogic:
 
     def check(self,event,button,label):
         
-        print(self.videodata.strbutton)
+        
         self.videodata.DeletePlaylist(button)
         a=self.videodata.strbutton.index(button)
-    
+        
         self.mybuttonlist[a].deleteLater()
         self.mybuttonlabellist[a].deleteLater()
         self.changelist[a].deleteLater()
@@ -690,27 +692,32 @@ class Mainlogic:
         del self.changelist[a]
         
         self.videodata.StoreButtons2()
+        
         self.NewPosition()
 
     def NewPosition(self):
         self.videodata.FindCount()
         for i in range(0,len(self.videodata.strbutton)):
-            if i<=4:
+            if i<4 :
                 print(i)
                 self.mybuttonlist[i].move(20+(300*i),20)
                 self.mybuttonlabellist[i].move(20+(300*i)+40,240)
                 self.changelist[i].move(20+(300*i)+40,240)
                 self.mydeletebutton[i].move(20+(300*i)+170,60)
                 self.mainlogic.playlist.addpushbutton.move(20+(300*self.videodata.result[0][0]),20)
-            if i>4 and i<=8:
-                print('asdf')
+                if self.videodata.result[0][0]>=4:
+                    self.mainlogic.playlist.addpushbutton.move(20+(300*(self.videodata.result[0][0]-4)),300)
+            if i>=4 and i<=8:
+                print(i)
                 self.mybuttonlist[i].move(20+(300*(i-4)),300)
                 self.mybuttonlabellist[i].move(20+(300*(i-4))+40,500)
-                self.changelist[i].move(20+(300*i)+40,500)
-                self.mydeletebutton[i].move(20+(300*i)+170,360)
-                self.mainlogic.playlist.addpushbutton.move(20+(300*self.videodata.result[0][0]-4),300)
-
+                self.changelist[i].move(20+(300*(i-4))+40,500)
+                self.mydeletebutton[i].move(20+(300*(i-4))+170,360)
+                self.mainlogic.playlist.addpushbutton.move(20+(300*(self.videodata.result[0][0]-4)),300)
+                print(self.mainlogic.playlist.addpushbutton)
+                print(self.mainlogic.playlist.addpushbutton.pos())
     def VideoListEditButton(self):
+        self.videodata.StoreButtons2()
         self.mydeletebutton=[]
         self.changelist=[]
        
@@ -724,7 +731,7 @@ class Mainlogic:
             
             self.videodata.deletebutton[i]=QtWidgets.QPushButton(self.mainlogic.playlist.playlistlist)
             self.mydeletebutton.append(self.videodata.deletebutton[i])
-            if i<=4 :
+            if i<4 :
                 print('zxcv')
                 self.videodata.deletebutton[i].setGeometry(20+(300*i)+170,60,30,30)
                 self.videodata.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
@@ -735,13 +742,17 @@ class Mainlogic:
                     self.videodata.deletebutton[i].mousePressEvent=lambda event,button=self.videodata.strbutton[i],label=self.videodata.strbutton[i]:self.check(event,button,label)
                 except IndexError:
                     pass
-            elif i>=4 and i<8:
+            if i>=4 and i<=8:
                 print('정답')
                 self.videodata.deletebutton[i].setGeometry(20+(300*(i-4))+170,360,30,30)
                 self.videodata.deletebutton[i].setStyleSheet('border-radius:15px;''background:red;')
                 self.videodata.deletebutton[i].setText('X')
                 self.videodata.deletebutton[i].setFont(QtGui.QFont(None,15))
                 self.videodata.deletebutton[i].hide()
+                try:
+                    self.videodata.deletebutton[i].mousePressEvent=lambda event,button=self.videodata.strbutton[i],label=self.videodata.strbutton[i]:self.check(event,button,label)
+                except IndexError:
+                    pass
             elif i>=8:
                 print('정답2')
                 self.videodata.deletebutton[i].setGeometry(20+(300*(i-8))+170,690,30,30)
@@ -776,8 +787,7 @@ class Mainlogic:
 
     def ApplyButton(self):
         
-        print('버튼라벨리스트',self.videodata.buttonlabellist)
-        print('버튼라벨리스트2',self.mainlogic.playlist.playlistlocate.mybuttonlabellist)
+        self.videodata.StoreButtons2()
         # print('버튼라벨리스트3',)
         self.mainlogic.playlist.addpushbutton.setDisabled(False)
         self.mainlogic.playlist.applybutton.hide()
@@ -808,6 +818,7 @@ class Mainlogic:
                 self.mainlogic.playlist.playlistlocate.buttonlist[i].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[i]:self.PlayVideo(event,myplaylist)
             except IndexError:
                 pass
+            self.mybuttonlist[self.videodata.result[0][0]-1].mousePressEvent=lambda event, myplaylist=self.videodata.strbutton[self.videodata.result[0][0]-1]:self.PlayVideo(event,myplaylist)
         self.videodata.StoreButtons2()
         self.AfterChange()
 
